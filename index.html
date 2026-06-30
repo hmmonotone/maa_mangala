@@ -103,18 +103,32 @@
         </div>
       </div>
 
-        <div class="flex flex-col gap-2 rounded-2xl border border-amber-200 bg-white/70 p-3 sm:flex-row sm:items-center">
-          <label class="relative flex-1 block">
-            <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
-            <input id="catalog-search" type="search" placeholder="Search products, brands, or categories..." class="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/40" />
-          </label>
-          <button id="catalog-clear" type="button" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:text-slate-950">
-            <i data-lucide="x" class="h-4 w-4"></i>
-            Clear
-          </button>
-        </div>
       </div>
     </header>
+
+    <section class="mt-5 glass overflow-hidden rounded-[2rem] border border-amber-200 shadow-glow">
+      <div class="relative overflow-hidden p-5 sm:p-6">
+        <div class="absolute -right-10 top-0 h-28 w-28 rounded-full bg-amber-300/30 blur-3xl"></div>
+        <div class="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-orange-300/20 blur-3xl"></div>
+        <div class="relative grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-[0.28em] text-amber-700">Search Catalogue</p>
+            <h2 class="mt-1 text-2xl font-bold text-slate-950 sm:text-3xl font-display">Find products instantly</h2>
+            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Search the inventory across mobiles, TVs, refrigerators, laptops, batteries, and more. Use category tabs below to narrow results.</p>
+          </div>
+          <label class="relative block lg:min-w-[380px]">
+            <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"></i>
+            <input id="catalog-search" type="search" placeholder="Search products, brands, or categories..." class="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/40" />
+          </label>
+          <div class="flex lg:justify-end">
+            <button id="catalog-clear" type="button" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:text-slate-950">
+              <i data-lucide="x" class="h-4 w-4"></i>
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
       <div class="glass relative overflow-hidden rounded-[2rem] p-6 shadow-glow sm:p-8 lg:p-10">
@@ -283,9 +297,9 @@
       <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p class="text-xs font-bold uppercase tracking-[0.28em] text-amber-700">Product Catalogue</p>
-          <h2 class="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl font-display">Search the inventory</h2>
+          <h2 class="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl font-display">Browse the inventory by category</h2>
         </div>
-        <p class="max-w-xl text-sm leading-6 text-slate-500">Search across all categories, or narrow down to a specific category. The catalogue reads from the unified product sheet format: category, item name, price, discount price, and image URL.</p>
+        <p class="max-w-xl text-sm leading-6 text-slate-500">The catalogue reads from the unified product sheet format: category, item name, price, discount price, and image URL.</p>
       </div>
 
       <div class="mt-5 glass rounded-[2rem] p-4 shadow-glow sm:p-5">
