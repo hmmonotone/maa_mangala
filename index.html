@@ -82,7 +82,8 @@
   <main class="relative mx-auto min-h-screen max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
     
     <header class="glass sticky top-3 z-30 mb-4 rounded-3xl px-4 py-3 shadow-glow">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-center gap-3">
           <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/10 ring-1 ring-amber-500/20">
             <i data-lucide="zap" class="h-5 w-5 text-amber-700"></i>
@@ -99,6 +100,18 @@
           <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-800 flex items-center gap-1">
             <i data-lucide="star" class="h-3 w-3 fill-current text-amber-600"></i> 5.0 Google Reviewed
           </span>
+        </div>
+      </div>
+
+        <div class="flex flex-col gap-2 rounded-2xl border border-amber-200 bg-white/70 p-3 sm:flex-row sm:items-center">
+          <label class="relative flex-1 block">
+            <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+            <input id="catalog-search" type="search" placeholder="Search products, brands, or categories..." class="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/40" />
+          </label>
+          <button id="catalog-clear" type="button" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:text-slate-950">
+            <i data-lucide="x" class="h-4 w-4"></i>
+            Clear
+          </button>
         </div>
       </div>
     </header>
@@ -263,23 +276,6 @@
             </div>
           </article>
         </div>
-      </div>
-    </section>
-
-    <section class="mt-5 glass rounded-[1.75rem] p-4 shadow-glow sm:p-5" id="quick-search">
-      <div class="flex flex-col gap-3 lg:flex-row lg:items-center">
-        <div class="min-w-0 flex-1">
-          <p class="text-xs font-bold uppercase tracking-[0.28em] text-amber-700">Search Catalogue</p>
-          <h2 class="mt-1 text-xl font-bold text-slate-950 font-display">Find products fast</h2>
-        </div>
-        <label class="relative flex-1 block">
-          <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"></i>
-          <input id="catalog-search" type="search" placeholder="Search by item, brand, or category..." class="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/40" />
-        </label>
-        <button id="catalog-clear" type="button" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:text-slate-950">
-          <i data-lucide="x" class="h-4 w-4"></i>
-          Clear
-        </button>
       </div>
     </section>
 
