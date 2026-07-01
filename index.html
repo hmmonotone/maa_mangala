@@ -110,21 +110,36 @@
       <div class="relative overflow-hidden p-5 sm:p-6">
         <div class="absolute -right-10 top-0 h-28 w-28 rounded-full bg-amber-300/30 blur-3xl"></div>
         <div class="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-orange-300/20 blur-3xl"></div>
-        <div class="relative grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
+        <div class="relative grid gap-4 xl:grid-cols-[1fr_minmax(360px,440px)] xl:items-center">
+          <div class="space-y-3">
             <p class="text-xs font-bold uppercase tracking-[0.28em] text-amber-700">Search Catalogue</p>
-            <h2 class="mt-1 text-2xl font-bold text-slate-950 sm:text-3xl font-display">Find products instantly</h2>
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">Search the inventory across mobiles, TVs, refrigerators, laptops, batteries, and more. Use category tabs below to narrow results.</p>
+            <h2 class="text-2xl font-bold text-slate-950 sm:text-3xl font-display">Find products instantly</h2>
+            <p class="max-w-2xl text-sm leading-6 text-slate-600">Search the inventory across mobiles, TVs, refrigerators, laptops, batteries, and more. Use category tabs below to narrow results.</p>
+            <div class="flex flex-wrap gap-2">
+              <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">Mobiles</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">TVs</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">Laptops</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">Appliances</span>
+            </div>
           </div>
-          <label class="relative block lg:min-w-[380px]">
-            <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"></i>
-            <input id="catalog-search" type="search" placeholder="Search products, brands, or categories..." class="w-full rounded-2xl border border-slate-200 bg-white py-4 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/40" />
-          </label>
-          <div class="flex lg:justify-end">
-            <button id="catalog-clear" type="button" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-4 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:text-slate-950">
-              <i data-lucide="x" class="h-4 w-4"></i>
-              Clear
-            </button>
+          <div class="space-y-3 xl:justify-self-end xl:w-full">
+            <div class="relative rounded-[1.7rem] bg-gradient-to-r from-amber-400 via-yellow-200 to-orange-400 p-[1px] shadow-[0_22px_50px_rgba(245,158,11,0.18)]">
+              <div class="relative rounded-[1.65rem] bg-white/96 p-3 backdrop-blur">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <label class="relative block flex-1">
+                    <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-amber-500"></i>
+                    <input id="catalog-search" type="search" autocomplete="off" spellcheck="false" placeholder="Search products, brands, or categories..." aria-autocomplete="list" aria-expanded="false" aria-controls="catalog-suggestions" class="h-14 w-full rounded-2xl border border-slate-200 bg-white/95 py-4 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/40" />
+                  </label>
+                  <button id="catalog-clear" type="button" class="inline-flex h-14 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:text-slate-950 sm:w-auto">
+                    <i data-lucide="x" class="h-4 w-4"></i>
+                    Clear
+                  </button>
+                </div>
+                <div id="catalog-suggestions" class="absolute left-0 right-0 top-[calc(100%+0.7rem)] z-20 hidden overflow-hidden rounded-[1.5rem] border border-amber-100 bg-white shadow-2xl shadow-amber-200/30"></div>
+              </div>
+            </div>
+            <div id="catalog-selected" class="hidden rounded-[1.35rem] border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-sm font-medium text-emerald-950 shadow-sm"></div>
+            <p class="text-xs font-medium text-slate-500">Tip: start typing to see product matches, then tap one to reveal a quick call action.</p>
           </div>
         </div>
       </div>
@@ -526,9 +541,16 @@
       categories: [],
       activeCategory: 'all',
       query: '',
+      selectedItem: null,
+      suggestions: [],
+      suggestionIndex: -1,
+      suggestionsOpen: false,
     };
+    const storePhone = '+917260814614';
     const catalogSearch = document.getElementById('catalog-search');
     const catalogClear = document.getElementById('catalog-clear');
+    const catalogSuggestions = document.getElementById('catalog-suggestions');
+    const catalogSelected = document.getElementById('catalog-selected');
     const catalogTabs = document.getElementById('catalog-tabs');
     const catalogResults = document.getElementById('catalog-results');
     const catalogSummary = document.getElementById('catalog-summary');
@@ -549,6 +571,111 @@
       (acc[item.category] ||= []).push(item);
       return acc;
     }, {});
+
+    const getSuggestionItems = () => {
+      const query = catalogState.query.trim().toLowerCase();
+      const matches = catalogState.items.filter((item) => {
+        if (!query) return true;
+        return `${item.itemName} ${item.category} ${item.categoryKey} ${item.price ?? ''} ${item.discountPrice ?? ''}`
+          .toLowerCase()
+          .includes(query);
+      });
+      return matches.slice(0, 7);
+    };
+
+    const renderSelected = () => {
+      if (!catalogSelected) return;
+      if (!catalogState.selectedItem) {
+        catalogSelected.classList.add('hidden');
+        catalogSelected.innerHTML = '';
+        return;
+      }
+
+      const item = catalogState.selectedItem;
+      catalogSelected.innerHTML = `
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-sm font-semibold text-emerald-950">
+              Selected: ${escapeHtml(item.itemName)}
+              <span class="mx-2 text-emerald-300">•</span>
+              <span class="text-emerald-700">${escapeHtml(item.category)}</span>
+            </p>
+          </div>
+          <a href="tel:${storePhone}" class="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-700">
+            <i data-lucide="phone-call" class="h-4 w-4"></i>
+            Call Now
+          </a>
+        </div>
+      `;
+      catalogSelected.classList.remove('hidden');
+      lucide.createIcons();
+    };
+
+    const renderSuggestions = () => {
+      if (!catalogSuggestions || !catalogSearch) return;
+
+      const query = catalogState.query.trim();
+      const suggestions = getSuggestionItems();
+      catalogState.suggestions = suggestions;
+
+      const open = catalogState.suggestionsOpen && (document.activeElement === catalogSearch || query.length > 0);
+      catalogSearch.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+      if (!open) {
+        catalogSuggestions.classList.add('hidden');
+        catalogSuggestions.innerHTML = '';
+        return;
+      }
+
+      const heading = query.length ? 'Matches' : 'Popular picks';
+
+      catalogSuggestions.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-amber-50 to-white px-4 py-3">
+          <span class="text-xs font-bold uppercase tracking-[0.24em] text-amber-700">${heading}</span>
+          <span class="text-[11px] font-semibold text-slate-400">${suggestions.length} item${suggestions.length === 1 ? '' : 's'}</span>
+        </div>
+        <div class="max-h-80 overflow-auto py-1">
+          ${
+            suggestions.length
+              ? suggestions.map((item, index) => `
+                  <button
+                    type="button"
+                    data-suggestion-index="${index}"
+                    class="flex w-full items-center gap-3 px-4 py-3 text-left transition ${
+                      index === catalogState.suggestionIndex ? 'bg-amber-50' : 'hover:bg-slate-50'
+                    }"
+                  >
+                    <img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.itemName)}" class="h-11 w-11 rounded-2xl object-cover ring-1 ring-slate-200" />
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate text-sm font-semibold text-slate-950">${escapeHtml(item.itemName)}</p>
+                      <p class="truncate text-xs font-medium text-slate-500">${escapeHtml(item.category)} • ${escapeHtml(priceLabel(item.discountPrice ?? item.price))}</p>
+                    </div>
+                    <i data-lucide="move-right" class="h-4 w-4 shrink-0 text-amber-500"></i>
+                  </button>
+                `).join('')
+              : `
+                <div class="px-4 py-6 text-center text-sm text-slate-500">
+                  No products found. Try a different brand, category, or model name.
+                </div>
+              `
+          }
+        </div>
+      `;
+      catalogSuggestions.classList.remove('hidden');
+      lucide.createIcons();
+    };
+
+    const selectSuggestion = (index) => {
+      const item = catalogState.suggestions[index];
+      if (!item) return;
+      catalogState.selectedItem = item;
+      catalogState.query = item.itemName;
+      catalogState.suggestionsOpen = false;
+      catalogState.suggestionIndex = -1;
+      if (catalogSearch) catalogSearch.value = item.itemName;
+      renderSelected();
+      renderSuggestions();
+    };
 
     const renderTabs = () => {
       if (!catalogTabs) return;
@@ -581,17 +708,14 @@
 
     const renderCatalog = () => {
       if (!catalogResults || !catalogSummary) return;
-      const query = catalogState.query.trim().toLowerCase();
       const filtered = catalogState.items.filter((item) => {
         const matchesCategory = catalogState.activeCategory === 'all' || item.categoryKey === catalogState.activeCategory;
-        const matchesQuery = !query
-          || `${item.category} ${item.itemName} ${item.price ?? ''} ${item.discountPrice ?? ''}`.toLowerCase().includes(query);
-        return matchesCategory && matchesQuery;
+        return matchesCategory;
       });
 
       const grouped = groupByCategory(filtered);
       const visibleCategories = catalogState.categories.filter((category) => grouped[category.label]?.length);
-      const isBrowsingAll = catalogState.activeCategory === 'all' && !query;
+      const isBrowsingAll = catalogState.activeCategory === 'all';
       const totalShown = visibleCategories.reduce((sum, category) => {
         const count = grouped[category.label].length;
         return sum + (isBrowsingAll ? Math.min(count, 4) : count);
@@ -708,9 +832,66 @@
     }
 
     if (catalogSearch) {
+      catalogSearch.addEventListener('focus', () => {
+        catalogState.suggestionsOpen = true;
+        catalogState.suggestionIndex = -1;
+        renderSuggestions();
+      });
+
       catalogSearch.addEventListener('input', (event) => {
         catalogState.query = event.target.value || '';
-        renderCatalog();
+        catalogState.selectedItem = null;
+        catalogState.suggestionIndex = -1;
+        catalogState.suggestionsOpen = true;
+        renderSelected();
+        renderSuggestions();
+      });
+
+      catalogSearch.addEventListener('keydown', (event) => {
+        if (!catalogState.suggestions.length || catalogSuggestions.classList.contains('hidden')) return;
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          catalogState.suggestionIndex = (catalogState.suggestionIndex + 1) % catalogState.suggestions.length;
+          renderSuggestions();
+        } else if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          catalogState.suggestionIndex = catalogState.suggestionIndex <= 0
+            ? catalogState.suggestions.length - 1
+            : catalogState.suggestionIndex - 1;
+          renderSuggestions();
+        } else if (event.key === 'Enter') {
+          if (catalogState.suggestionIndex >= 0) {
+            event.preventDefault();
+            selectSuggestion(catalogState.suggestionIndex);
+          } else if (catalogState.suggestions.length === 1) {
+            event.preventDefault();
+            selectSuggestion(0);
+          }
+        } else if (event.key === 'Escape') {
+          catalogState.suggestionsOpen = false;
+          catalogState.suggestionIndex = -1;
+          renderSuggestions();
+        }
+      });
+
+      catalogSearch.addEventListener('blur', () => {
+        window.setTimeout(() => {
+          catalogState.suggestionsOpen = false;
+          catalogState.suggestionIndex = -1;
+          renderSuggestions();
+        }, 140);
+      });
+    }
+
+    if (catalogSuggestions) {
+      catalogSuggestions.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+      });
+
+      catalogSuggestions.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-suggestion-index]');
+        if (!button) return;
+        selectSuggestion(Number(button.dataset.suggestionIndex));
       });
     }
 
@@ -718,7 +899,12 @@
       catalogClear.addEventListener('click', () => {
         catalogState.query = '';
         catalogState.activeCategory = 'all';
+        catalogState.selectedItem = null;
+        catalogState.suggestionsOpen = false;
+        catalogState.suggestionIndex = -1;
         if (catalogSearch) catalogSearch.value = '';
+        renderSelected();
+        renderSuggestions();
         syncCatalog();
       });
     }
@@ -732,6 +918,7 @@
         catalogState.items = Array.isArray(payload.items) ? payload.items : [];
         catalogState.categories = Array.isArray(payload.categories) ? payload.categories : [];
         syncCatalog();
+        renderSuggestions();
       })
       .catch(() => {
         if (catalogSummary) catalogSummary.textContent = 'Catalogue unavailable';
