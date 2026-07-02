@@ -3,936 +3,1540 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Maa Mangla Digital Pvt. Ltd. is an electronics store in Gaya, Bihar with a searchable product catalogue, category-wise inventory, map directions, and direct contact details." />
-  <title>Maa Mangla Digital Pvt. Ltd. | Searchable Electronics Catalogue in Gaya</title>
+  <meta name="description" content="Maa Mangla Digital Pvt. Ltd. is an electronics store in Gaya, Bihar with a searchable product catalogue, local video highlights, map directions, and direct contact options." />
+  <title>Maa Mangla Digital Pvt. Ltd. | Electronics Store in Gaya</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Space Grotesk', 'sans-serif'],
+            sans: ['Manrope', 'sans-serif'],
+            display: ['Fraunces', 'serif'],
           },
           boxShadow: {
-            glow: '0 0 0 1px rgba(245, 158, 11, 0.15), 0 24px 60px rgba(15, 23, 42, 0.08)',
+            glow: '0 0 0 1px rgba(251, 191, 36, 0.18), 0 24px 70px rgba(15, 23, 42, 0.18)',
           },
-        }
-      }
-    }
+        },
+      },
+    };
   </script>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="./catalog-data.js"></script>
+
   <style>
-    :root { color-scheme: light; }
-    html { scroll-behavior: smooth; }
+    :root {
+      color-scheme: light;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
+      min-height: 100vh;
+      overflow-x: hidden;
       background:
-        radial-gradient(circle at 14% 14%, rgba(254, 240, 138, 0.4), transparent 25%),
-        radial-gradient(circle at 86% 14%, rgba(251, 191, 36, 0.3), transparent 25%),
-        radial-gradient(circle at 50% 90%, rgba(251, 146, 60, 0.15), transparent 30%),
-        linear-gradient(135deg, #fffdec 0%, #fff7cc 20%, #f7fbff 48%, #fff9d4 76%, #fff4b8 100%);
-      background-size: 220% 220%;
-      animation: bgShift 18s ease-in-out infinite alternate;
+        radial-gradient(circle at 12% 10%, rgba(251, 191, 36, 0.24), transparent 22%),
+        radial-gradient(circle at 88% 12%, rgba(56, 189, 248, 0.18), transparent 20%),
+        radial-gradient(circle at 50% 88%, rgba(244, 114, 182, 0.12), transparent 26%),
+        linear-gradient(180deg, #fffdf7 0%, #f6f1e8 100%);
+      color: #0f172a;
     }
-    .glass {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(245, 158, 11, 0.15);
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.05));
+      opacity: 0.65;
     }
-    .hero-gradient {
-      background: linear-gradient(135deg, #9a3412 0%, #c2410c 30%, #d97706 70%, #b45309 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+
+    .surface {
+      position: relative;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
     }
-    .media-sheen::after {
+
+    .surface::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.02), rgba(15, 23, 42, 0.65));
+      border-radius: inherit;
+      pointer-events: none;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.35), rgba(255, 255, 255, 0.55), rgba(14, 165, 233, 0.28));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
     }
-    @keyframes floaty {
-      0% { transform: translate3d(0, 0, 0) scale(1); }
-      100% { transform: translate3d(0, -12px, 0) scale(1.04); }
+
+    .surface-inner {
+      background: rgba(255, 255, 255, 0.92);
     }
-    .floaty {
-      animation: floaty 7s ease-in-out infinite alternate;
+
+    .grain {
+      background-image:
+        radial-gradient(rgba(15, 23, 42, 0.08) 0.6px, transparent 0.6px);
+      background-size: 10px 10px;
+      opacity: 0.24;
     }
-    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
-    @keyframes bgShift {
-      0% { background-position: 0% 0%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 100%; }
+
+    .section-label {
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      font-weight: 800;
     }
-    .instagram-mark {
-      display: block;
+
+    .hero-title {
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+
+    .card-hover {
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.12);
+    }
+
+    .scroll-hide {
+      scrollbar-width: none;
+    }
+
+    .scroll-hide::-webkit-scrollbar {
+      display: none;
     }
   </style>
-  <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="font-sans text-slate-900 antialiased">
-  <div class="pointer-events-none fixed inset-0 overflow-hidden">
-    <div class="floaty absolute -left-20 top-20 h-72 w-72 rounded-full bg-yellow-300/35 blur-3xl"></div>
-    <div class="floaty absolute right-0 top-24 h-80 w-80 rounded-full bg-amber-300/35 blur-3xl" style="animation-delay:-2s;"></div>
-    <div class="floaty absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-orange-300/22 blur-3xl" style="animation-delay:-4s;"></div>
-  </div>
+<body class="font-sans antialiased text-slate-900">
+  <div id="app">
+    <div class="pointer-events-none fixed inset-0 overflow-hidden">
+      <div class="absolute left-0 top-0 h-80 w-80 rounded-full bg-amber-300/20 blur-3xl"></div>
+      <div class="absolute right-0 top-16 h-96 w-96 rounded-full bg-sky-300/15 blur-3xl"></div>
+      <div class="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-rose-300/10 blur-3xl"></div>
+      <div class="absolute inset-0 grain"></div>
+    </div>
 
-  <main class="relative mx-auto min-h-screen max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
-    
-    <header class="glass sticky top-3 z-30 mb-4 rounded-3xl px-4 py-3 shadow-glow">
-      <div class="flex flex-col gap-3">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div class="flex items-center gap-3">
-          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/10 ring-1 ring-amber-500/20">
-            <i data-lucide="zap" class="h-5 w-5 text-amber-700"></i>
-          </div>
-          <div>
-            <p class="text-sm font-bold text-slate-900 tracking-wide">Maa Mangla Digital Pvt. Ltd.</p>
-            <p class="text-xs text-slate-500 font-medium">Trusted electronics store in Gaya, Bihar</p>
-          </div>
-        </div>
-        <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
-          <span class="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700 flex items-center gap-1">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse"></span> Open Until 10:00 PM
-          </span>
-          <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-800 flex items-center gap-1">
-            <i data-lucide="star" class="h-3 w-3 fill-current text-amber-600"></i> 5.0 Google Reviewed
-          </span>
-        </div>
-      </div>
-
-      </div>
-    </header>
-
-    <section class="mt-5 glass overflow-hidden rounded-[2rem] border border-amber-200 shadow-glow">
-      <div class="relative overflow-hidden p-5 sm:p-6">
-        <div class="absolute -right-10 top-0 h-28 w-28 rounded-full bg-amber-300/30 blur-3xl"></div>
-        <div class="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-orange-300/20 blur-3xl"></div>
-        <div class="relative grid gap-4 xl:grid-cols-[1fr_minmax(360px,440px)] xl:items-center">
-          <div class="space-y-3">
-            <p class="text-xs font-bold uppercase tracking-[0.28em] text-amber-700">Search Catalogue</p>
-            <h2 class="text-2xl font-bold text-slate-950 sm:text-3xl font-display">Find products instantly</h2>
-            <p class="max-w-2xl text-sm leading-6 text-slate-600">Search the inventory across mobiles, TVs, refrigerators, laptops, batteries, and more. Use category tabs below to narrow results.</p>
-            <div class="flex flex-wrap gap-2">
-              <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">Mobiles</span>
-              <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">TVs</span>
-              <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">Laptops</span>
-              <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">Appliances</span>
+    <main class="relative mx-auto min-h-screen max-w-7xl px-4 pb-28 pt-4 sm:px-6 lg:px-8">
+      <header class="surface sticky top-3 z-40 overflow-hidden rounded-[1.75rem] px-4 py-3">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-300 to-orange-400 text-slate-950 shadow-sm">
+              <i data-lucide="zap" class="h-5 w-5"></i>
+            </div>
+            <div>
+              <p class="text-sm font-extrabold tracking-wide text-slate-950">Maa Mangla Digital Pvt. Ltd.</p>
+              <p class="text-xs font-medium text-slate-500">Electronics store in Gaya, Bihar</p>
             </div>
           </div>
-          <div class="space-y-3 xl:justify-self-end xl:w-full">
-            <div class="relative rounded-[1.7rem] bg-gradient-to-r from-amber-400 via-yellow-200 to-orange-400 p-[1px] shadow-[0_22px_50px_rgba(245,158,11,0.18)]">
-              <div class="relative rounded-[1.65rem] bg-white/96 p-3 backdrop-blur">
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                  <label class="relative block flex-1">
-                    <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-amber-500"></i>
-                    <input id="catalog-search" type="search" autocomplete="off" spellcheck="false" placeholder="Search products, brands, or categories..." aria-autocomplete="list" aria-expanded="false" aria-controls="catalog-suggestions" class="h-14 w-full rounded-2xl border border-slate-200 bg-white/95 py-4 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/40" />
-                  </label>
-                  <button id="catalog-clear" type="button" class="inline-flex h-14 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:border-amber-300 hover:text-slate-950 sm:w-auto">
-                    <i data-lucide="x" class="h-4 w-4"></i>
-                    Clear
-                  </button>
-                </div>
-                <div id="catalog-suggestions" class="absolute left-0 right-0 top-[calc(100%+0.7rem)] z-20 hidden overflow-hidden rounded-[1.5rem] border border-amber-100 bg-white shadow-2xl shadow-amber-200/30"></div>
+
+          <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
+            <button type="button" @click="currentView = 'home'" class="inline-flex items-center gap-2 rounded-full border px-4 py-2 transition" :class="currentView === 'home' ? 'border-slate-950 bg-slate-950 text-white' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'">
+              <i data-lucide="home" class="h-3.5 w-3.5"></i>
+              Home
+            </button>
+            <button type="button" @click="currentView = 'products'" class="inline-flex items-center gap-2 rounded-full border px-4 py-2 transition" :class="currentView === 'products' ? 'border-amber-300 bg-amber-100 text-amber-900' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'">
+              <i data-lucide="layout-grid" class="h-3.5 w-3.5"></i>
+              Products
+            </button>
+            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700">
+              <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Open until 10:00 PM
+            </span>
+            <span class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-800">
+              <i data-lucide="star" class="h-3.5 w-3.5 fill-current text-amber-500"></i>
+              5.0 Google Reviewed
+            </span>
+            <a href="tel:+917260814614" class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">
+              <i data-lucide="phone-call" class="h-3.5 w-3.5 text-emerald-600"></i>
+              Call Now
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <section class="mt-6 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+        <div class="surface relative overflow-hidden rounded-[2.5rem] p-6 sm:p-8 lg:p-10">
+          <div class="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-amber-200/40 blur-3xl"></div>
+          <div class="absolute bottom-0 left-0 h-56 w-56 rounded-full bg-sky-200/20 blur-3xl"></div>
+
+          <div class="relative">
+            <div class="flex flex-wrap gap-2">
+              <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.26em] text-amber-800">Gaya, Bihar</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.26em] text-slate-600">Search-driven storefront</span>
+            </div>
+
+            <h1 class="hero-title mt-6 max-w-3xl text-4xl font-black text-slate-950 sm:text-5xl lg:text-6xl">
+              Premium electronics
+              <span class="block font-display text-amber-600">with a clearer, faster shopping flow</span>
+            </h1>
+
+            <p class="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+              Browse mobiles, televisions, appliances, accessories, and more in one polished storefront.
+              Search the inventory, filter by category, open product details, and reach the store directly.
+            </p>
+
+            <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+              <a href="https://maps.app.goo.gl/DRpcXtBeAX1uKYU66" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white transition hover:bg-slate-800">
+                <i data-lucide="navigation" class="h-5 w-5 text-amber-300"></i>
+                Get Directions
+              </a>
+              <a href="tel:+917260814614" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 font-bold text-slate-900 transition hover:border-slate-300 hover:bg-slate-50">
+                <i data-lucide="phone-call" class="h-5 w-5 text-emerald-600"></i>
+                Call Store
+              </a>
+              <button type="button" @click="openProductsPage" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-6 py-4 font-bold text-amber-800 transition hover:bg-amber-100">
+                <i data-lucide="sparkles" class="h-5 w-5 text-amber-600"></i>
+                Browse Products
+              </button>
+            </div>
+
+            <div class="mt-8 grid gap-3 sm:grid-cols-3">
+              <div class="rounded-[1.5rem] border border-slate-200 bg-white p-4">
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Hours</p>
+                <p class="mt-1 text-sm font-semibold text-slate-900">Open until 10:00 PM</p>
+              </div>
+              <div class="rounded-[1.5rem] border border-slate-200 bg-white p-4">
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Trust</p>
+                <p class="mt-1 text-sm font-semibold text-slate-900">5.0 Google Reviews</p>
+              </div>
+              <div class="rounded-[1.5rem] border border-slate-200 bg-white p-4">
+                <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-400">Contact</p>
+                <p class="mt-1 text-sm font-semibold text-emerald-700">+91 7260814614</p>
               </div>
             </div>
-            <div id="catalog-selected" class="hidden rounded-[1.35rem] border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-sm font-medium text-emerald-950 shadow-sm"></div>
-            <p class="text-xs font-medium text-slate-500">Tip: start typing to see product matches, then tap one to reveal a quick call action.</p>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="grid gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-      <div class="glass relative overflow-hidden rounded-[2rem] p-6 shadow-glow sm:p-8 lg:p-10">
-        <div class="absolute -right-16 top-8 h-40 w-40 rounded-full bg-amber-200/35 blur-3xl"></div>
-        <div class="absolute -left-20 bottom-0 h-48 w-48 rounded-full bg-amber-200/30 blur-3xl"></div>
-
-        <div class="relative">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="rounded-full border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-800 tracking-wide uppercase">All Electronics • One Destination</span>
-            <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">Gaya, Bihar</span>
+        <div class="surface relative overflow-hidden rounded-[2.5rem] p-4 sm:p-5">
+          <div class="absolute left-5 top-5 z-10 rounded-full border border-slate-200 bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-slate-700 backdrop-blur">
+            Store highlights
           </div>
 
-          <h1 class="mt-6 max-w-2xl text-4xl font-extrabold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-            <span class="hero-gradient">Premium Home Tech & Gadgets</span>
-            <span class="mt-2 block font-display text-amber-800 tracking-wide">Maa Mangla Digital</span>
-          </h1>
-
-          <p class="mt-5 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-            Welcome to Gaya's complete electronics experience hub. Located centrally near Maharani Bus Stand, we feature top global brands under one roof, backed by flexible payment options, great exchange programs, and comprehensive warranty coverage.
-          </p>
-
-          <div class="mt-7 flex flex-col gap-3 sm:flex-row">
-            <a href="https://maps.app.goo.gl/DRpcXtBeAX1uKYU66" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 px-6 py-4 font-bold text-white shadow-lg shadow-amber-600/20 transition hover:scale-[1.01] hover:brightness-105 active:scale-95">
-              <i data-lucide="navigation" class="h-5 w-5"></i>
-              Get Directions to Store
-            </a>
-            <a href="tel:+917260814614" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 font-bold text-slate-800 transition hover:bg-slate-50 shadow-sm">
-              <i data-lucide="phone-call" class="h-5 w-5 text-emerald-600"></i>
-              Call Store Assistant
-            </a>
+          <div class="relative overflow-hidden rounded-[2rem]">
+            <div class="aspect-[4/5] w-full">
+              <img :src="heroSlides[heroIndex].image" :alt="heroSlides[heroIndex].alt" class="h-full w-full object-cover" />
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 p-5 text-white">
+              <p class="text-xs font-bold uppercase tracking-[0.26em] text-amber-300">{{ heroSlides[heroIndex].eyebrow }}</p>
+              <p class="mt-2 text-2xl font-bold">{{ heroSlides[heroIndex].title }}</p>
+              <p class="mt-2 max-w-md text-sm leading-6 text-slate-200">{{ heroSlides[heroIndex].copy }}</p>
+            </div>
           </div>
 
-          <div class="mt-8 grid gap-3 grid-cols-2 sm:grid-cols-3">
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-400">Today’s hours</p>
-              <p class="mt-1 text-sm font-semibold text-slate-800">Open until 10:00 PM</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-400">Customer trust</p>
-              <p class="mt-1 text-sm font-semibold text-slate-800">Rated 5.0 on Google</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm col-span-2 sm:col-span-1">
-              <p class="text-xs font-bold uppercase tracking-[0.15em] text-slate-400">Quick contact</p>
-              <p class="mt-1 text-sm font-semibold text-emerald-700 flex items-center gap-1"><i data-lucide="shield-check" class="h-4 w-4"></i> +91 7260814614</p>
-            </div>
+          <div class="mt-4 grid grid-cols-3 gap-2">
+            <button v-for="(slide, index) in heroSlides" :key="slide.title" type="button" @click="heroIndex = index" class="card-hover rounded-[1.25rem] border p-3 text-left transition" :class="heroIndex === index ? 'border-amber-300 bg-amber-50 shadow-glow' : 'border-slate-200 bg-white hover:bg-slate-50'">
+              <p class="text-[10px] font-bold uppercase tracking-[0.24em]" :class="heroIndex === index ? 'text-amber-700' : 'text-slate-400'">{{ slide.eyebrow }}</p>
+              <p class="mt-1 text-sm font-bold" :class="heroIndex === index ? 'text-slate-950' : 'text-slate-700'">{{ slide.short }}</p>
+            </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="grid gap-4 sm:grid-cols-2">
-        <article class="media-sheen relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-glow sm:col-span-2">
-          <img src="Maa_Mangla_Digital.jpg" alt="Maa Mangla Digital showroom front display screen" class="h-full min-h-[240px] w-full object-cover sm:min-h-[280px]" />
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white ring-1 ring-white/25">Storefront Entrance</span>
-              <span class="rounded-full bg-amber-400/25 px-3 py-1 text-xs font-semibold text-white ring-1 ring-amber-200/30">Live Outdoor LED Screen</span>
+      <section class="mt-6 grid gap-4 md:grid-cols-3">
+        <article class="surface card-hover rounded-[2rem] p-5">
+          <div class="flex items-center gap-3">
+            <div class="rounded-2xl bg-amber-100 p-3 text-amber-700 ring-1 ring-amber-200">
+              <i data-lucide="sparkles" class="h-5 w-5"></i>
             </div>
-            <h2 class="mt-3 text-2xl font-bold text-white font-display">Gaya's modern milestone landmark store</h2>
+            <div>
+              <p class="text-sm font-bold text-slate-950">Fast discovery</p>
+              <p class="text-xs text-slate-500">Find the right item in seconds</p>
+            </div>
           </div>
         </article>
-
-        <article class="media-sheen relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-glow">
-          <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80" alt="Latest Mobile smartphones lineup" class="h-56 w-full object-cover" />
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-4">
-            <p class="text-sm font-bold text-white tracking-wide">Smartphones & Acc.</p>
-            <p class="text-xs text-slate-200">Flagships, protective gears & sound systems</p>
+        <article class="surface card-hover rounded-[2rem] p-5">
+          <div class="flex items-center gap-3">
+            <div class="rounded-2xl bg-sky-100 p-3 text-sky-700 ring-1 ring-sky-200">
+              <i data-lucide="map-pin" class="h-5 w-5"></i>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-slate-950">Easy directions</p>
+              <p class="text-xs text-slate-500">Maps, phone, and Instagram are one tap away</p>
+            </div>
           </div>
         </article>
-
-        <article class="media-sheen relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-glow">
-          <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=1200&q=80" alt="4K Ultra HD Smart TV display wall" class="h-56 w-full object-cover" />
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/10 to-transparent"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-4">
-            <p class="text-sm font-bold text-white tracking-wide">4K Smart Entertainment</p>
-            <p class="text-xs text-slate-200">Immersive home cinema entertainment display walls</p>
+        <article class="surface card-hover rounded-[2rem] p-5">
+          <div class="flex items-center gap-3">
+            <div class="rounded-2xl bg-emerald-100 p-3 text-emerald-700 ring-1 ring-emerald-200">
+              <i data-lucide="phone-call" class="h-5 w-5"></i>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-slate-950">Direct support</p>
+              <p class="text-xs text-slate-500">Call the store without extra steps</p>
+            </div>
           </div>
         </article>
-      </div>
-    </section>
+      </section>
 
-    <section class="mt-5 glass overflow-hidden rounded-[1.75rem] px-5 py-4">
-      <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-extrabold uppercase tracking-[0.24em] text-slate-500">
-        <span>Samsung</span><span class="text-amber-500/50">•</span>
-        <span>LG</span><span class="text-amber-500/50">•</span>
-        <span>Whirlpool</span><span class="text-amber-500/50">•</span>
-        <span>Haier</span><span class="text-amber-500/50">•</span>
-        <span>Voltas</span><span class="text-amber-500/50">•</span>
-        <span>Hitachi</span>
-      </div>
-    </section>
-
-    <section class="mt-12">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p class="text-xs font-bold uppercase tracking-[0.28em] text-amber-700">Video Walkthrough</p>
-          <h2 class="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl font-display">Experience The Rush & Energy</h2>
-        </div>
-        <p class="max-w-xl text-sm leading-6 text-slate-500">Take an interior virtual walkthrough across our active showcase zones, high-volume seasonal sales events, and direct inventory checks.</p>
-      </div>
-
-      <div class="relative mt-5">
-        <button id="video-prev" type="button" aria-label="Previous video" class="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-slate-950/70 p-3 text-white backdrop-blur transition hover:bg-slate-950">
-          <i data-lucide="chevron-left" class="h-5 w-5"></i>
-        </button>
-        <button id="video-next" type="button" aria-label="Next video" class="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full bg-slate-950/70 p-3 text-white backdrop-blur transition hover:bg-slate-950">
-          <i data-lucide="chevron-right" class="h-5 w-5"></i>
-        </button>
-
-        <div id="video-carousel" class="flex gap-4 overflow-x-auto scroll-smooth pb-3 pr-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <article class="carousel-card glass relative min-w-[84%] overflow-hidden rounded-[2rem] border border-slate-200 sm:min-w-[420px] lg:min-w-[480px]">
-            <video class="carousel-video h-[420px] w-full object-cover sm:h-[500px]" autoplay loop muted playsinline preload="metadata" controls>
-              <source src="promo-sale.mp4" type="video/mp4" />
-            </video>
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent p-5">
-              <p class="text-sm font-bold uppercase tracking-[0.24em] text-amber-300">Showroom Buzz</p>
-              <p class="mt-1 text-lg font-semibold text-white">Full house crowds exploring elite deals</p>
-            </div>
-          </article>
-
-          <article class="carousel-card glass relative min-w-[84%] overflow-hidden rounded-[2rem] border border-slate-200 sm:min-w-[420px] lg:min-w-[480px]">
-            <video class="carousel-video h-[420px] w-full object-cover sm:h-[500px]" autoplay loop muted playsinline preload="metadata" controls>
-              <source src="branding-reel.mp4" type="video/mp4" />
-            </video>
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent p-5">
-              <p class="text-sm font-bold uppercase tracking-[0.24em] text-amber-300">Smart Cooling Wall</p>
-              <p class="mt-1 text-lg font-semibold text-white">Advanced energy-efficient inverter AC lineups</p>
-            </div>
-          </article>
-
-          <article class="carousel-card glass relative min-w-[84%] overflow-hidden rounded-[2rem] border border-slate-200 sm:min-w-[420px] lg:min-w-[480px]">
-            <video class="carousel-video h-[420px] w-full object-cover sm:h-[500px]" autoplay loop muted playsinline preload="metadata" controls>
-              <source src="water-purifier.mp4" type="video/mp4" />
-            </video>
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent p-5">
-              <p class="text-sm font-bold uppercase tracking-[0.24em] text-amber-300">Pure Water Tech</p>
-              <p class="mt-1 text-lg font-semibold text-white">Multi-stage copper filtration RO systems</p>
-            </div>
-          </article>
-
-          <article class="carousel-card glass relative min-w-[84%] overflow-hidden rounded-[2rem] border border-slate-200 sm:min-w-[420px] lg:min-w-[480px]">
-            <video class="carousel-video h-[420px] w-full object-cover sm:h-[500px]" autoplay loop muted playsinline preload="metadata" controls>
-              <source src="kitchen-upgrade.mp4" type="video/mp4" />
-            </video>
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent p-5">
-              <p class="text-sm font-bold uppercase tracking-[0.24em] text-amber-300">Smart Kitchens</p>
-              <p class="mt-1 text-lg font-semibold text-white">Auto-clean chimneys & cooktops showcase</p>
-            </div>
-          </article>
-
-          <article class="carousel-card glass relative min-w-[84%] overflow-hidden rounded-[2rem] border border-slate-200 sm:min-w-[420px] lg:min-w-[480px]">
-            <video class="carousel-video h-[420px] w-full object-cover sm:h-[500px]" autoplay loop muted playsinline preload="metadata" controls>
-              <source src="ac-fridge.mp4" type="video/mp4" />
-            </video>
-            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent p-5">
-              <p class="text-sm font-bold uppercase tracking-[0.24em] text-amber-300">Home Laundry</p>
-              <p class="mt-1 text-lg font-semibold text-white">Next-gen front & top load smart washers</p>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="mt-12" id="catalogue">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p class="text-xs font-bold uppercase tracking-[0.28em] text-amber-700">Product Catalogue</p>
-          <h2 class="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl font-display">Browse the inventory by category</h2>
-        </div>
-        <p class="max-w-xl text-sm leading-6 text-slate-500">The catalogue reads from the unified product sheet format: category, item name, price, discount price, and image URL.</p>
-      </div>
-
-      <div class="mt-5 glass rounded-[2rem] p-4 shadow-glow sm:p-5">
-        <div class="mt-4">
+      <section v-if="currentView === 'home'" class="mt-8">
+        <div class="surface rounded-[2rem] p-5 sm:p-6">
           <div class="flex items-center justify-between gap-3">
-            <p class="text-xs font-bold uppercase tracking-[0.24em] text-slate-500">Categories</p>
-            <p id="catalog-summary" class="text-xs font-semibold text-slate-500">Loading inventory...</p>
+            <div>
+              <p class="section-label text-sky-600">Video showcase</p>
+              <h2 class="mt-2 text-2xl font-black text-slate-950">Watch the store in motion</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" @click="scrollClipCarousel(-1)" class="rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:bg-slate-50">
+                <i data-lucide="chevron-left" class="h-5 w-5"></i>
+              </button>
+              <button type="button" @click="scrollClipCarousel(1)" class="rounded-full border border-slate-200 bg-white p-2 text-slate-700 transition hover:bg-slate-50">
+                <i data-lucide="chevron-right" class="h-5 w-5"></i>
+              </button>
+            </div>
           </div>
-          <div id="catalog-tabs" class="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"></div>
+
+          <div class="mt-5 overflow-hidden rounded-[1.8rem] border border-slate-200 bg-slate-950">
+            <div ref="clipCarousel" class="flex gap-4 overflow-x-auto px-4 py-4 scroll-smooth snap-x snap-mandatory scroll-hide">
+              <article
+                v-for="(clip, index) in clips"
+                :key="clip.src"
+                class="w-[280px] shrink-0 overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/5 snap-start sm:w-[320px] lg:w-[360px]"
+              >
+                <div class="aspect-[16/10] bg-slate-900">
+                  <video
+                    class="h-full w-full object-cover"
+                    :src="clip.src"
+                    autoplay
+                    muted
+                    loop
+                    playsinline
+                    preload="metadata"
+                  ></video>
+                </div>
+                <div class="p-4 text-white">
+                  <p class="mt-2 text-base font-bold">{{ clip.title }}</p>
+                  <p class="mt-1 text-sm text-slate-300">{{ clip.copy }}</p>
+                </div>
+              </article>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div id="catalog-results" class="mt-5"></div>
-    </section>
+      <section class="relative z-50 mt-8 isolate">
+        <div class="surface rounded-[2.5rem] p-5 sm:p-6">
+          <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="section-label text-amber-600">Search catalogue</p>
+              <h2 class="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">Find products instantly</h2>
+              <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                Search by product name, brand, or category. The bar is intentionally bright and separated from the catalog so it stays visible.
+              </p>
+            </div>
 
-    <section class="mt-12 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-      <div class="grid gap-5 sm:grid-cols-2">
-        <article class="glass overflow-hidden rounded-[1.75rem] border border-slate-200 p-4 shadow-glow">
+            <div class="flex flex-wrap gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1">Mobiles</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1">TVs</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1">Laptops</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-1">Appliances</span>
+            </div>
+          </div>
+
+          <div class="mt-5 surface surface-inner rounded-[2rem] p-4 sm:p-5">
+            <div class="mb-3 flex flex-wrap items-center gap-2">
+              <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.24em] text-amber-800">Instant search</span>
+              <span class="text-xs font-medium text-slate-500">Search the inventory or press Enter to open a result card</span>
+            </div>
+
+            <div class="relative">
+              <label class="relative block">
+                <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-amber-600"></i>
+                <input
+                  v-model="searchQuery"
+                  @focus="showSuggestions = true"
+                  @input="showSuggestions = true"
+                  @keydown.enter.prevent="openFirstSuggestion"
+                  @keydown.esc="showSuggestions = false"
+                  @blur="scheduleHideSuggestions"
+                  type="search"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Search products, brands, categories, or model names..."
+                  class="h-14 w-full rounded-[1.25rem] border border-slate-300 bg-white py-4 pl-12 pr-32 text-sm font-semibold text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-amber-400 focus:ring-4 focus:ring-amber-200/60"
+                />
+              </label>
+
+              <div class="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-2">
+                <button v-if="searchQuery" type="button" @click="clearSearch" class="rounded-[1rem] border border-slate-200 bg-slate-950 px-4 py-2 text-sm font-bold text-white transition hover:bg-slate-800">
+                  Clear
+                </button>
+              </div>
+
+              <div v-if="showSuggestions && suggestionItems.length" class="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-[70] overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white text-slate-900 shadow-[0_30px_80px_rgba(15,23,42,0.18)]">
+                <div class="flex items-center justify-between border-b border-slate-100 bg-amber-50 px-4 py-3">
+                  <span class="text-xs font-extrabold uppercase tracking-[0.22em] text-amber-700">{{ searchQuery.trim() ? 'Matches' : 'Popular picks' }}</span>
+                  <span class="text-[11px] font-semibold text-slate-500">{{ searchResults.length }} item{{ searchResults.length === 1 ? '' : 's' }}</span>
+                </div>
+
+                <div class="max-h-80 overflow-auto py-1 scroll-hide">
+                  <button
+                    v-for="item in suggestionItems"
+                    :key="item.category + '-' + item.itemName"
+                    type="button"
+                    @mousedown.prevent="openSuggestion(item)"
+                    class="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-slate-50"
+                  >
+                    <img :src="productImage(item)" @error="handleProductImageError" :alt="item.itemName" class="h-11 w-11 rounded-2xl object-cover ring-1 ring-slate-200" />
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate text-sm font-bold text-slate-950">{{ item.itemName }}</p>
+                      <p class="truncate text-xs font-medium text-slate-500">{{ item.category }} • {{ formatPrice(item.discountPrice ?? item.price) }}</p>
+                    </div>
+                    <i data-lucide="move-right" class="h-4 w-4 shrink-0 text-amber-600"></i>
+                  </button>
+                  <div v-if="hasMoreSearchResults" class="px-4 pb-4 pt-2">
+                    <button type="button" @mousedown.prevent="openSearchResultsPage" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
+                      View all {{ searchResults.length }} results
+                      <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="showSuggestions && !suggestionItems.length" class="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-[70] overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-500 shadow-[0_30px_80px_rgba(15,23,42,0.18)]">
+                No products found. Try a different brand, model, or category.
+              </div>
+            </div>
+
+            <div class="mt-3 text-xs font-medium text-slate-500">
+              Tip: use the category chips below to narrow the catalog, or open a product for a quick view.
+            </div>
+
+            <div v-if="selectedItem" class="mt-3 rounded-[1.35rem] border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+              Selected: {{ selectedItem.itemName }}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="currentView === 'search-results'" class="mt-10">
+        <div class="surface rounded-[2rem] p-5 sm:p-6">
+          <div class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="section-label text-amber-600">Search results</p>
+              <h2 class="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">All matching products</h2>
+              <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                This page lists every item that matches the search term. The dropdown only shows the top three results now.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" @click="currentView = 'products'" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-50">
+                <i data-lucide="layout-grid" class="h-4 w-4"></i>
+                Products page
+              </button>
+              <button type="button" @click="currentView = 'home'" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
+                <i data-lucide="home" class="h-4 w-4"></i>
+                Home
+              </button>
+            </div>
+          </div>
+
+          <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <article v-for="item in searchResults" :key="'search-' + item.category + '-' + item.itemName" class="surface surface-inner card-hover overflow-hidden rounded-[1.6rem]">
+              <div class="relative">
+                <img :src="productImage(item)" @error="handleProductImageError" :alt="item.itemName" class="h-48 w-full object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/10 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-300">{{ item.category }}</p>
+                  <h3 class="mt-1 break-words text-lg font-extrabold leading-6">{{ item.itemName }}</h3>
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="mt-4 grid gap-2 sm:grid-cols-2">
+                  <div class="rounded-2xl bg-slate-50 p-3">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Price</p>
+                    <p class="mt-1 text-sm font-bold text-slate-950">{{ formatPrice(item.price) }}</p>
+                  </div>
+                  <div class="rounded-2xl bg-slate-50 p-3">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Discount</p>
+                    <p class="mt-1 text-sm font-bold text-slate-950">{{ formatPrice(item.discountPrice) }}</p>
+                  </div>
+                </div>
+                <button type="button" @click="openItem(item)" class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
+                  <i data-lucide="eye" class="h-4 w-4 text-amber-300"></i>
+                  Quick view
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <div v-if="!searchResults.length" class="mt-5 rounded-[2rem] border border-slate-200 bg-white p-8 text-center">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+              <i data-lucide="search-x" class="h-6 w-6"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-black text-slate-950">No matching items</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-500">Try another keyword or clear the search to see all products.</p>
+          </div>
+        </div>
+      </section>
+
+      <section v-if="currentView === 'products'" id="catalogue" class="relative z-10 mt-10 space-y-6">
+        <div class="surface rounded-[2rem] p-5 sm:p-6">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="section-label text-amber-600">Product catalogue</p>
+              <h2 class="mt-2 text-2xl font-black text-slate-950 sm:text-3xl">Browse by category</h2>
+              <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+                Browse the full live catalogue. Use category chips to narrow the view and open any product for a quick look.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs font-bold text-slate-500">
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-2">{{ filteredItems.length }} matching items</span>
+              <span class="rounded-full border border-slate-200 bg-white px-3 py-2">{{ categoriesWithAll.length - 1 }} categories</span>
+            </div>
+          </div>
+
+          <div class="mt-5 overflow-x-auto pb-1">
+            <div class="flex min-w-max flex-wrap gap-2">
+              <button
+                v-for="category in categoriesWithAll"
+                :key="category.key"
+                type="button"
+                @click="activeCategory = category.key"
+                class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold transition"
+                :class="activeCategory === category.key ? 'border-amber-300 bg-amber-100 text-amber-900 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'"
+              >
+                <span>{{ category.label }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-8">
+          <section v-for="section in catalogSections" :key="section.category.key" class="surface rounded-[2rem] p-5 sm:p-6">
+            <div class="mb-5 flex items-center justify-between gap-3">
+              <div>
+                <p class="text-xs font-extrabold uppercase tracking-[0.24em] text-amber-600">{{ section.category.label }}</p>
+                <h3 class="mt-1 text-xl font-black text-slate-950">{{ section.items.length }} items</h3>
+              </div>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <article
+                v-for="item in visibleCatalogItems(section)"
+                :key="item.category + '-' + item.itemName"
+                class="surface surface-inner card-hover min-w-0 overflow-hidden rounded-[1.6rem]"
+              >
+                <div class="relative">
+                  <img :src="productImage(item)" @error="handleProductImageError" :alt="item.itemName" class="h-52 w-full object-cover" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/10 to-transparent"></div>
+                  <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-amber-300">{{ item.category }}</p>
+                    <h4 class="mt-1 break-words text-lg font-extrabold leading-6">{{ item.itemName }}</h4>
+                  </div>
+                </div>
+
+                <div class="p-4">
+                  <div class="grid gap-2 sm:grid-cols-2">
+                    <div class="rounded-2xl bg-slate-50 p-3">
+                      <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Price</p>
+                      <p class="mt-1 text-sm font-bold text-slate-950">{{ formatPrice(item.price) }}</p>
+                    </div>
+                    <div class="rounded-2xl bg-slate-50 p-3">
+                      <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Discount</p>
+                      <p class="mt-1 text-sm font-bold text-slate-950">{{ formatPrice(item.discountPrice) }}</p>
+                    </div>
+                  </div>
+
+                  <button type="button" @click="openItem(item)" class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
+                    <i data-lucide="eye" class="h-4 w-4 text-amber-300"></i>
+                    Quick view
+                  </button>
+                </div>
+              </article>
+            </div>
+
+            <div v-if="section.items.length > 3" class="mt-5 flex justify-center">
+              <button
+                type="button"
+                @click="toggleCatalogSection(section.category.key)"
+                class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+              >
+                {{ expandedCatalogSections[section.category.key] ? 'Show less' : 'View all ' + section.items.length }}
+                <i data-lucide="chevron-down" class="h-4 w-4" :class="expandedCatalogSections[section.category.key] ? 'rotate-180' : ''"></i>
+              </button>
+            </div>
+          </section>
+
+          <div v-if="!filteredItems.length" class="surface rounded-[2rem] p-8 text-center">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+              <i data-lucide="search-x" class="h-6 w-6"></i>
+            </div>
+            <h3 class="mt-4 text-xl font-black text-slate-950">No matching items</h3>
+            <p class="mt-2 text-sm leading-6 text-slate-500">Try another keyword or switch categories to see more of the catalog.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mt-10 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+        <div class="surface overflow-hidden rounded-[2rem] p-5 sm:p-6">
           <div class="flex items-center gap-3">
-            <div class="rounded-2xl bg-amber-100 p-3 ring-1 ring-amber-200">
-              <i data-lucide="credit-card" class="h-5 w-5 text-amber-700"></i>
+            <div class="rounded-2xl bg-sky-100 p-3 text-sky-700 ring-1 ring-sky-200">
+              <i data-lucide="map-pin" class="h-5 w-5"></i>
             </div>
             <div>
-              <p class="text-sm font-bold text-slate-900">Local and dependable</p>
-              <p class="text-xs text-slate-500">Easy calling, directions, and visits</p>
-            </div>
-          </div>
-          <div class="mt-4 overflow-hidden rounded-2xl">
-            <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1200&q=80" alt="Home appliances retail counter space" class="h-44 w-full object-cover" />
-          </div>
-        </article>
-
-        <article class="glass overflow-hidden rounded-[1.75rem] border border-slate-200 p-4 shadow-glow">
-          <div class="flex items-center gap-3">
-            <div class="rounded-2xl bg-amber-100 p-3 ring-1 ring-amber-200">
-              <i data-lucide="refresh-cw" class="h-5 w-5 text-amber-700"></i>
-            </div>
-            <div>
-              <p class="text-sm font-bold text-slate-900">Open until 10:00 PM</p>
-              <p class="text-xs text-slate-500">Convenient for evening visits</p>
-            </div>
-          </div>
-          <div class="mt-4 overflow-hidden rounded-2xl">
-            <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80" alt="Modern electronic store design display layout" class="h-44 w-full object-cover" />
-          </div>
-        </article>
-
-        <article class="glass overflow-hidden rounded-[1.75rem] border border-slate-200 p-5 shadow-glow sm:col-span-2">
-          <div class="flex items-center gap-3">
-            <div class="rounded-2xl bg-emerald-100 p-3 ring-1 ring-emerald-200">
-              <i data-lucide="award" class="h-5 w-5 text-emerald-700"></i>
-            </div>
-            <div>
-              <p class="text-sm font-bold text-slate-900">5.0 Google rating</p>
-              <p class="text-xs text-slate-500">Displayed prominently for confidence</p>
-            </div>
-          </div>
-          <p class="mt-4 max-w-2xl text-sm leading-6 text-slate-600 font-medium">
-            Bright, warm, and business-focused. Designed so local customers can immediately see what the store offers, where it is, and how to get in touch.
-          </p>
-        </article>
-      </div>
-
-      <div class="glass rounded-[1.75rem] p-5 shadow-glow sm:p-6 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center gap-3">
-            <div class="rounded-2xl bg-amber-100 p-3 ring-1 ring-amber-200">
-              <i data-lucide="map-pin" class="h-5 w-5 text-amber-700"></i>
-            </div>
-            <div>
-              <p class="text-xs font-bold uppercase tracking-[0.24em] text-amber-700">Map & Contact</p>
-              <h2 class="mt-1 text-2xl font-bold text-slate-950 font-display">Visit the store with ease</h2>
+              <p class="section-label text-sky-600">Visit us</p>
+              <h2 class="mt-1 text-2xl font-black text-slate-950">Map & contact</h2>
             </div>
           </div>
 
-          <p class="mt-4 text-sm font-medium leading-6 text-slate-600">
+          <p class="mt-4 max-w-xl text-sm leading-6 text-slate-600">
             South, Church Rd, near Maharani Bus Stand, Jaiprakash Nagar, Gaya, Bihar 823001
           </p>
 
-          <div class="mt-5 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <div class="mt-5 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-slate-50">
             <div class="aspect-[4/3] w-full sm:aspect-[16/10]">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3610.1506087541816!2d84.9972305!3d24.8587188!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f32bcd7e7935cf%3A0x6fbcd72ee5f3d537!2sMaa%20Mangla%20Digital%20Pvt.%20Ltd.!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3622.164319688383!2d84.99768402934572!3d24.789826259927583!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f32b000000bac9%3A0x337144713205c328!2sMaa%20mangla%20digital%20pvt.%20Ltd!5e0!3m2!1sen!2sin!4v1781852750007!5m2!1sen!2sin"
                 class="h-full w-full"
                 style="border:0;"
                 allowfullscreen=""
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
-                title="Maa Mangla Digital Pvt. Ltd. Verified Google Maps location navigation map">
+                title="Maa Mangla Digital Pvt. Ltd. Google Maps location">
               </iframe>
             </div>
           </div>
+
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            <a href="tel:+917260814614" class="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 font-semibold text-emerald-800 transition hover:bg-emerald-100">
+              <span class="inline-flex items-center gap-3">
+                <i data-lucide="phone" class="h-5 w-5 text-emerald-600"></i>
+                Call Store
+              </span>
+              <span class="font-mono text-xs tracking-wide text-emerald-700">+91 7260814614</span>
+            </a>
+
+            <a href="https://wa.me/917260814614" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-4 font-semibold text-slate-800 transition hover:bg-slate-50">
+              <span class="inline-flex items-center gap-3">
+                <i data-lucide="message-square" class="h-5 w-5 text-emerald-600"></i>
+                WhatsApp Chat
+              </span>
+              <i data-lucide="arrow-up-right" class="h-5 w-5 text-slate-400"></i>
+            </a>
+          </div>
         </div>
 
-        <div class="mt-5 space-y-3">
-          <a href="tel:+917260814614" class="flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-emerald-800 transition hover:bg-emerald-100 shadow-sm font-semibold">
-            <span class="inline-flex items-center gap-3">
-              <i data-lucide="phone" class="h-5 w-5 text-emerald-600"></i>
-              Call Store
-            </span>
-            <span class="font-mono text-xs tracking-wide">+91 7260814614</span>
-          </a>
-          <a href="https://wa.me/917260814614" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-amber-800 transition hover:bg-amber-100 shadow-sm font-semibold">
-            <span class="inline-flex items-center gap-3">
-              <i data-lucide="message-square" class="h-5 w-5 text-amber-600"></i>
-              WhatsApp Chat
-            </span>
-            <i data-lucide="arrow-up-right" class="h-5 w-5"></i>
-          </a>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <article class="surface overflow-hidden rounded-[1.75rem] p-4">
+            <div class="flex items-center gap-3">
+              <div class="rounded-2xl bg-amber-100 p-3 text-amber-700 ring-1 ring-amber-200">
+                <i data-lucide="credit-card" class="h-5 w-5"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-950">Easy discovery</p>
+                <p class="text-xs text-slate-500">Search and quick view are built in</p>
+              </div>
+            </div>
+            <div class="mt-4 overflow-hidden rounded-2xl">
+              <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80" alt="Retail display layout" class="h-44 w-full object-cover" />
+            </div>
+          </article>
+
+          <article class="surface overflow-hidden rounded-[1.75rem] p-4">
+            <div class="flex items-center gap-3">
+              <div class="rounded-2xl bg-sky-100 p-3 text-sky-700 ring-1 ring-sky-200">
+                <i data-lucide="clock-3" class="h-5 w-5"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-950">Open until 10:00 PM</p>
+                <p class="text-xs text-slate-500">Convenient evening visits</p>
+              </div>
+            </div>
+            <div class="mt-4 overflow-hidden rounded-2xl">
+              <img src="https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=1200&q=80" alt="Appliance counter" class="h-44 w-full object-cover" />
+            </div>
+          </article>
+
+          <article class="surface overflow-hidden rounded-[1.75rem] p-4 sm:col-span-2">
+            <div class="flex items-center gap-3">
+              <div class="rounded-2xl bg-emerald-100 p-3 text-emerald-700 ring-1 ring-emerald-200">
+                <i data-lucide="award" class="h-5 w-5"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-slate-950">5.0 Google rating</p>
+                <p class="text-xs text-slate-500">Visible for confidence and trust</p>
+              </div>
+            </div>
+            <p class="mt-4 text-sm leading-6 text-slate-600">
+              A premium storefront presence with practical discovery tools for mobile-first local customers.
+            </p>
+          </article>
         </div>
+      </section>
+
+      <footer class="surface mt-10 rounded-[1.75rem] px-5 py-5 sm:px-6">
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="text-base font-extrabold tracking-wide text-slate-950">Maa Mangla Digital Pvt. Ltd.</p>
+            <p class="mt-1 text-sm font-medium text-slate-500">Electronics, appliances, and mobile essentials in Gaya</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <a href="https://www.instagram.com/maamangla_digital/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-pink-200 bg-white text-pink-500 transition hover:bg-pink-50">
+              <svg class="h-6 w-6" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="igGradFooter" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#feda75" />
+                    <stop offset="35%" stop-color="#fa7e1e" />
+                    <stop offset="65%" stop-color="#d62976" />
+                    <stop offset="100%" stop-color="#962fbf" />
+                  </linearGradient>
+                </defs>
+                <rect x="5" y="5" width="54" height="54" rx="16" fill="url(#igGradFooter)" />
+                <rect x="12" y="12" width="40" height="40" rx="12" fill="none" stroke="#fff" stroke-width="4" />
+                <circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="4" />
+                <circle cx="45.5" cy="18.5" r="3.5" fill="#fff" />
+              </svg>
+            </a>
+            <a href="tel:+917260814614" aria-label="Call store" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-700 transition hover:bg-emerald-100">
+              <i data-lucide="phone" class="h-5 w-5"></i>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <div class="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/90 px-4 py-3 backdrop-blur-xl sm:hidden">
+      <div class="mx-auto grid max-w-3xl grid-cols-3 gap-2">
+        <a href="tel:+917260814614" class="flex flex-col items-center justify-center rounded-2xl bg-emerald-50 px-3 py-3 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200 active:scale-95 transition">
+          <i data-lucide="phone" class="mb-1 h-5 w-5 text-emerald-600"></i>
+          Call
+        </a>
+        <a href="https://maps.app.goo.gl/DRpcXtBeAX1uKYU66" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center rounded-2xl bg-amber-50 px-3 py-3 text-xs font-bold text-amber-800 ring-1 ring-amber-200 active:scale-95 transition">
+          <i data-lucide="map-pin" class="mb-1 h-5 w-5 text-amber-600"></i>
+          Maps
+        </a>
+        <a href="https://www.instagram.com/maamangla_digital/" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center rounded-2xl bg-white px-3 py-3 text-xs font-bold text-pink-700 ring-1 ring-pink-200 active:scale-95 transition">
+          <svg class="mb-1 h-6 w-6" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="igGradMobile" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#feda75" />
+                <stop offset="35%" stop-color="#fa7e1e" />
+                <stop offset="65%" stop-color="#d62976" />
+                <stop offset="100%" stop-color="#962fbf" />
+              </linearGradient>
+            </defs>
+            <rect x="5" y="5" width="54" height="54" rx="16" fill="url(#igGradMobile)" />
+            <rect x="12" y="12" width="40" height="40" rx="12" fill="none" stroke="#fff" stroke-width="4" />
+            <circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="4" />
+            <circle cx="45.5" cy="18.5" r="3.5" fill="#fff" />
+          </svg>
+          Insta
+        </a>
       </div>
-    </section>
-
-    <footer class="mt-10 glass rounded-[1.75rem] px-5 py-5 sm:px-6">
-      <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p class="text-base font-bold text-slate-950 tracking-wide">Maa Mangla Digital Pvt. Ltd.</p>
-          <p class="mt-1 text-sm text-slate-500 font-medium">Electronics, appliances, and mobile essentials in Gaya</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <a href="https://www.instagram.com/maamangla_digital/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-pink-300 bg-white shadow-sm transition hover:bg-pink-50">
-            <svg class="instagram-mark h-6 w-6" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-              <defs>
-                <linearGradient id="igGradFooter" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#feda75" />
-                  <stop offset="35%" stop-color="#fa7e1e" />
-                  <stop offset="65%" stop-color="#d62976" />
-                  <stop offset="100%" stop-color="#962fbf" />
-                </linearGradient>
-              </defs>
-              <rect x="5" y="5" width="54" height="54" rx="16" fill="url(#igGradFooter)" />
-              <rect x="12" y="12" width="40" height="40" rx="12" fill="none" stroke="#fff" stroke-width="4" />
-              <circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="4" />
-              <circle cx="45.5" cy="18.5" r="3.5" fill="#fff" />
-            </svg>
-          </a>
-          <a href="tel:+917260814614" aria-label="Call store" class="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-700 transition hover:bg-emerald-100 shadow-sm">
-            <i data-lucide="phone" class="h-5 w-5"></i>
-          </a>
-        </div>
-      </div>
-    </footer>
-  </main>
-
-  <div class="safe-bottom fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-xl sm:hidden">
-    <div class="mx-auto grid max-w-3xl grid-cols-3 gap-2">
-      <a href="tel:+917260814614" class="flex flex-col items-center justify-center rounded-2xl bg-emerald-50 px-3 py-3 text-xs font-bold text-emerald-800 ring-1 ring-emerald-200 active:scale-95 transition">
-        <i data-lucide="phone" class="mb-1 h-5 w-5 text-emerald-600"></i>
-        Call
-      </a>
-      <a href="https://maps.app.goo.gl/DRpcXtBeAX1uKYU66" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center rounded-2xl bg-amber-50 px-3 py-3 text-xs font-bold text-amber-800 ring-1 ring-amber-200 active:scale-95 transition">
-        <i data-lucide="map-pin" class="mb-1 h-5 w-5 text-amber-600"></i>
-        Maps
-      </a>
-      <a href="https://www.instagram.com/maamangla_digital/" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center rounded-2xl bg-white px-3 py-3 text-xs font-bold text-pink-700 shadow-sm ring-1 ring-pink-300 active:scale-95 transition">
-        <svg class="instagram-mark mb-1 h-6 w-6" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="igGradMobile" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#feda75" />
-              <stop offset="35%" stop-color="#fa7e1e" />
-              <stop offset="65%" stop-color="#d62976" />
-              <stop offset="100%" stop-color="#962fbf" />
-            </linearGradient>
-          </defs>
-          <rect x="5" y="5" width="54" height="54" rx="16" fill="url(#igGradMobile)" />
-          <rect x="12" y="12" width="40" height="40" rx="12" fill="none" stroke="#fff" stroke-width="4" />
-          <circle cx="32" cy="32" r="10" fill="none" stroke="#fff" stroke-width="4" />
-          <circle cx="45.5" cy="18.5" r="3.5" fill="#fff" />
-        </svg>
-        Insta
-      </a>
     </div>
+
+    <transition name="fade">
+      <div v-if="showCatalogManager" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4 py-6 backdrop-blur-sm" @click.self="showCatalogManager = false">
+        <div class="surface relative w-full max-w-3xl overflow-hidden rounded-[2rem] bg-white">
+          <button type="button" @click="showCatalogManager = false" class="absolute right-4 top-4 z-20 rounded-full border border-slate-200 bg-white p-2 text-slate-700 shadow-sm transition hover:bg-slate-50">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+
+          <div class="grid gap-0 lg:grid-cols-[0.98fr_1.02fr]">
+            <div class="bg-slate-950 p-6 text-white">
+              <p class="section-label text-amber-300">Staff tools</p>
+              <h3 class="mt-2 text-3xl font-black tracking-tight">Upload catalog data</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-300">
+                Upload a CSV or Excel file from the website itself. The app validates and normalizes the rows, updates the catalog locally right away, and saves it to the live server when the admin token is provided.
+              </p>
+
+              <div class="mt-6 space-y-3 text-sm text-slate-200">
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-amber-300">Current source</p>
+                  <p class="mt-1 font-semibold">{{ catalogSourceLabel }}</p>
+                </div>
+                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-amber-300">Import status</p>
+                  <p class="mt-1 font-semibold">{{ catalogImportStatus || 'Ready to import' }}</p>
+                </div>
+              </div>
+
+              <div class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-6 text-slate-300">
+                <p class="font-bold text-white">Expected columns</p>
+                <code class="mt-2 block whitespace-pre-wrap text-xs text-amber-200">category, categoryKey, itemName, price, discountPrice, imageUrl, stock</code>
+              </div>
+
+              <div class="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-6 text-slate-300">
+                <p class="font-bold text-white">Server access</p>
+                <p class="mt-1 text-xs text-slate-400">Enter the admin token to save uploads into the live catalog on the server.</p>
+                <input
+                  v-model.trim="catalogAdminToken"
+                  type="password"
+                  autocomplete="current-password"
+                  placeholder="Admin token"
+                  class="mt-3 h-11 w-full rounded-2xl border border-white/10 bg-slate-900 px-4 text-sm font-semibold text-white outline-none transition placeholder:text-slate-500 focus:border-amber-300 focus:ring-4 focus:ring-amber-200/30"
+                />
+              </div>
+            </div>
+
+            <div class="p-6 sm:p-8">
+              <div class="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-4">
+                <input
+                  ref="catalogFileInput"
+                  type="file"
+                  accept=".csv,.xlsx,.xls"
+                  class="hidden"
+                  @change="handleCatalogFileSelect"
+                />
+
+                <label class="block">
+                  <span class="text-xs font-extrabold uppercase tracking-[0.2em] text-slate-500">Upload file</span>
+                  <div class="mt-3 flex flex-col gap-3 sm:flex-row">
+                    <button type="button" @click="triggerCatalogFilePicker" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
+                      <i data-lucide="upload" class="h-4 w-4"></i>
+                      Choose CSV or Excel
+                    </button>
+                    <a href="./catalog-upload-template.csv" download class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-50">
+                      <i data-lucide="file-down" class="h-4 w-4"></i>
+                      Download template
+                    </a>
+                  </div>
+                </label>
+
+                <div class="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">
+                  <p class="font-semibold text-slate-900">{{ catalogSelectedFileName || 'No file selected yet' }}</p>
+                  <p class="mt-1">The uploaded file updates the site catalog immediately and then saves to the live catalog on the server when access is authorized.</p>
+                </div>
+
+                <div v-if="catalogImportError" class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                  {{ catalogImportError }}
+                </div>
+
+                <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <button type="button" @click="importSelectedCatalogFile" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-500">
+                    <i data-lucide="check-circle-2" class="h-4 w-4"></i>
+                    Import and apply
+                  </button>
+                  <button type="button" @click="downloadNormalizedCatalogJson" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-50">
+                    <i data-lucide="download" class="h-4 w-4"></i>
+                    Download JSON
+                  </button>
+                </div>
+
+                <div class="mt-3 flex flex-col gap-3 sm:flex-row">
+                  <button type="button" @click="clearCatalogOverride" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-3 text-sm font-bold text-amber-800 transition hover:bg-amber-100">
+                    <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+                    Restore bundled catalog
+                  </button>
+                  <button type="button" @click="showCatalogManager = false" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-50">
+                    Close
+                  </button>
+                </div>
+
+                <p class="mt-4 text-xs leading-5 text-slate-500">
+                  The import is applied safely in this browser first. Use <span class="font-semibold text-slate-700">Download JSON</span> to save a replacement `catalog-data.json` for the repo.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
+
+    <transition name="fade">
+      <div v-if="selectedItem" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 px-4 py-6 backdrop-blur-sm" @click.self="closeItem">
+        <div class="surface relative w-full max-w-4xl overflow-hidden rounded-[2rem] bg-white">
+          <button type="button" @click="closeItem" class="absolute right-4 top-4 z-20 rounded-full border border-slate-200 bg-white p-2 text-slate-700 shadow-sm transition hover:bg-slate-50">
+            <i data-lucide="x" class="h-5 w-5"></i>
+          </button>
+
+          <div class="grid gap-0 lg:grid-cols-[0.96fr_1.04fr]">
+            <div class="relative min-h-[280px]">
+              <img :src="productImage(selectedItem)" @error="handleProductImageError" :alt="selectedItem.itemName" class="h-full w-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+              <div class="absolute bottom-4 left-4 right-4">
+                <span class="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-white backdrop-blur">
+                  {{ selectedItem.category }}
+                </span>
+              </div>
+            </div>
+
+            <div class="p-6 sm:p-8 lg:p-10">
+              <p class="section-label text-amber-600">Quick view</p>
+              <h3 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">{{ selectedItem.itemName }}</h3>
+              <p class="mt-3 text-sm leading-6 text-slate-600">
+                Tap call to ask about pricing and availability. This card gives you a quick product snapshot without leaving the page.
+              </p>
+
+              <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Price</p>
+                  <p class="mt-1 text-base font-bold text-slate-950">{{ formatPrice(selectedItem.price) }}</p>
+                </div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Discount</p>
+                  <p class="mt-1 text-base font-bold text-slate-950">{{ formatPrice(selectedItem.discountPrice) }}</p>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                <a :href="'tel:+917260814614'" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white transition hover:bg-slate-800">
+                  <i data-lucide="phone-call" class="h-5 w-5 text-amber-300"></i>
+                  Call Now
+                </a>
+                <button type="button" @click="closeItem" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-4 font-bold text-slate-800 transition hover:bg-slate-50">
+                  <i data-lucide="x" class="h-5 w-5"></i>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 
   <script>
-    // Carousel navigation controls logic
-    const carousel = document.getElementById('video-carousel');
-    const prev = document.getElementById('video-prev');
-    const next = document.getElementById('video-next');
-    if (carousel && prev && next) {
-      const scrollByCard = (direction) => {
-        const amount = Math.max(320, Math.floor(carousel.clientWidth * 0.88));
-        carousel.scrollBy({ left: direction * amount, behavior: 'smooth' });
-      };
-      prev.addEventListener('click', () => scrollByCard(-1));
-      next.addEventListener('click', () => scrollByCard(1));
-    }
+    const { createApp, nextTick } = Vue;
+    const CATALOG_OVERRIDE_KEY = 'maa_mangla_catalog_override_v1';
+    const CATALOG_ADMIN_TOKEN_KEY = 'maa_mangla_catalog_admin_token_v1';
 
-    // Video auto playback management system via view threshold intersection loops
-    const carouselVideos = Array.from(document.querySelectorAll('.carousel-video'));
-    const startVideo = (video) => {
-      if (!video) return;
-      video.muted = true;
-      video.playsInline = true;
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise.catch(() => {});
-      }
+    const compareText = (a, b) => String(a ?? '').localeCompare(String(b ?? ''), undefined, {
+      sensitivity: 'base',
+      numeric: true,
+    });
+
+    const parseNumberOrNull = (value, integer = false) => {
+      const text = String(value ?? '').trim();
+      if (!text) return null;
+      const normalized = text.replace(/[,\s]/g, '');
+      const number = integer ? parseInt(normalized, 10) : Number(normalized);
+      return Number.isFinite(number) ? number : null;
     };
 
-    if ('IntersectionObserver' in window && carouselVideos.length) {
-      const videoObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            startVideo(entry.target);
-          } else {
-            entry.target.pause();
-          }
-        });
-      }, { threshold: 0.35 });
+    const slugifyKey = (value) => String(value ?? '')
+      .trim()
+      .toLowerCase()
+      .replace(/&/g, ' and ')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
 
-      carouselVideos.forEach((video) => videoObserver.observe(video));
-      window.addEventListener('load', () => {
-        carouselVideos.forEach(startVideo);
+    const buildCategoriesFromItems = (items) => {
+      const seen = new Map();
+      items.forEach((item) => {
+        const key = item.categoryKey || slugifyKey(item.category);
+        if (!key) return;
+        const existing = seen.get(key) || {
+          key,
+          label: item.category || key,
+          imageUrl: '',
+          count: 0,
+        };
+        existing.count += 1;
+        if (!existing.imageUrl && item.imageUrl) existing.imageUrl = item.imageUrl;
+        seen.set(key, existing);
       });
-    } else {
-      window.addEventListener('load', () => {
-        carouselVideos.forEach(startVideo);
-      });
-    }
-
-    const catalogState = {
-      items: [],
-      categories: [],
-      activeCategory: 'all',
-      query: '',
-      selectedItem: null,
-      suggestions: [],
-      suggestionIndex: -1,
-      suggestionsOpen: false,
-    };
-    const storePhone = '+917260814614';
-    const catalogSearch = document.getElementById('catalog-search');
-    const catalogClear = document.getElementById('catalog-clear');
-    const catalogSuggestions = document.getElementById('catalog-suggestions');
-    const catalogSelected = document.getElementById('catalog-selected');
-    const catalogTabs = document.getElementById('catalog-tabs');
-    const catalogResults = document.getElementById('catalog-results');
-    const catalogSummary = document.getElementById('catalog-summary');
-
-    const escapeHtml = (value) => String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-
-    const priceLabel = (value) => {
-      if (value === null || value === undefined || value === '') return 'Price on request';
-      return typeof value === 'number' ? `₹${value}` : String(value);
+      return Array.from(seen.values()).sort((a, b) => compareText(a.label, b.label) || compareText(a.key, b.key));
     };
 
-    const groupByCategory = (items) => items.reduce((acc, item) => {
-      (acc[item.category] ||= []).push(item);
-      return acc;
-    }, {});
+    const normalizeCatalogPayload = (payload) => {
+      const rawItems = Array.isArray(payload?.items) ? payload.items : [];
+      const items = rawItems.map((row) => {
+        const category = String(row?.category ?? '').trim();
+        const itemName = String(row?.itemName ?? '').trim();
+        if (!category || !itemName) return null;
+        const categoryKey = String(row?.categoryKey ?? '').trim() || slugifyKey(category);
+        return {
+          category,
+          categoryKey,
+          itemName,
+          price: parseNumberOrNull(row?.price),
+          discountPrice: parseNumberOrNull(row?.discountPrice),
+          imageUrl: String(row?.imageUrl ?? '').trim(),
+          stock: parseNumberOrNull(row?.stock, true),
+        };
+      }).filter(Boolean).sort((a, b) => compareText(a.category, b.category) || compareText(a.itemName, b.itemName));
 
-    const getSuggestionItems = () => {
-      const query = catalogState.query.trim().toLowerCase();
-      const matches = catalogState.items.filter((item) => {
-        if (!query) return true;
-        return `${item.itemName} ${item.category} ${item.categoryKey} ${item.price ?? ''} ${item.discountPrice ?? ''}`
-          .toLowerCase()
-          .includes(query);
-      });
-      return matches.slice(0, 7);
+      const categories = Array.isArray(payload?.categories) && payload.categories.length
+        ? payload.categories.map((category) => ({
+            key: String(category?.key ?? '').trim(),
+            label: String(category?.label ?? '').trim() || String(category?.key ?? '').trim(),
+            imageUrl: String(category?.imageUrl ?? '').trim(),
+            count: parseNumberOrNull(category?.count, true) ?? 0,
+          })).filter((category) => category.key && category.label)
+            .sort((a, b) => compareText(a.label, b.label) || compareText(a.key, b.key))
+        : buildCategoriesFromItems(items);
+
+      return { categories, items };
     };
 
-    const renderSelected = () => {
-      if (!catalogSelected) return;
-      if (!catalogState.selectedItem) {
-        catalogSelected.classList.add('hidden');
-        catalogSelected.innerHTML = '';
-        return;
-      }
+    createApp({
+      data() {
+        return {
+          loading: true,
+          error: '',
+          showCatalogManager: false,
+          catalogImportStatus: '',
+          catalogImportError: '',
+          catalogSelectedFileName: '',
+          catalogSourceLabel: 'Bundled catalog-data.js',
+          catalogAdminToken: window.localStorage.getItem(CATALOG_ADMIN_TOKEN_KEY) || '',
+          currentView: 'home',
+          activeCategory: 'all',
+          searchQuery: '',
+          showSuggestions: false,
+          expandedCatalogSections: {},
+          heroIndex: 0,
+          selectedItem: null,
+          heroTimer: null,
+          data: {
+            categories: [],
+            items: [],
+          },
+          heroSlides: [
+            {
+              image: 'Maa_Mangla_Digital.jpg',
+              alt: 'Maa Mangla Digital storefront',
+              eyebrow: 'Storefront',
+              title: 'A trusted electronics destination in Gaya',
+              short: 'Storefront',
+              copy: 'Clean lighting, broad assortment, and a simple path to find the right device.',
+            },
+            {
+              image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1600&q=80',
+              alt: 'Smartphones display',
+              eyebrow: 'Mobiles',
+              title: 'Mobile phones and accessories that are easy to compare',
+              short: 'Mobiles',
+              copy: 'Search quickly, compare items, and open details with one tap.',
+            },
+            {
+              image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=1600&q=80',
+              alt: 'Smart TV wall',
+              eyebrow: 'Smart TVs',
+              title: 'Entertainment upgrades that stand out',
+              short: 'TVs',
+              copy: 'The catalog keeps larger purchases discoverable and easy to browse.',
+            },
+          ],
+          clips: [
+            { src: 'promo-sale.mp4', title: 'Promo sale', copy: 'Offers and store activity' },
+            { src: 'branding-reel.mp4', title: 'Brand reel', copy: 'Store identity and motion' },
+            { src: 'water-purifier.mp4', title: 'Water purifier', copy: 'Product showcase clip' },
+            { src: 'kitchen-upgrade.mp4', title: 'Kitchen upgrade', copy: 'Appliance highlight' },
+            { src: 'ac-fridge.mp4', title: 'AC and fridge', copy: 'Cooling category reel' },
+            { src: 'value-reel.mp4', title: 'Value reel', copy: 'Store value summary' },
+            { src: 'contact-reel.mp4', title: 'Contact reel', copy: 'Reach us in a tap' },
+          ],
+        };
+      },
+      computed: {
+        normalizedQuery() {
+          return this.searchQuery.trim().toLowerCase();
+        },
+        searchResults() {
+          const query = this.normalizedQuery;
+          if (!query) return this.data.items;
+          return this.data.items.filter((item) => `${item.itemName} ${item.category} ${item.categoryKey} ${item.price ?? ''} ${item.discountPrice ?? ''}`.toLowerCase().includes(query));
+        },
+        suggestionItems() {
+          return this.searchResults.slice(0, 3);
+        },
+        hasMoreSearchResults() {
+          return this.searchResults.length > 3;
+        },
+        categoriesWithAll() {
+          const itemCountForCategory = (key) => this.data.items.filter((item) => item.categoryKey === key).length;
+          return [
+            { key: 'all', label: 'All', count: this.data.items.length },
+            ...this.data.categories.map((category) => ({
+              ...category,
+              count: category.count ?? itemCountForCategory(category.key),
+            })),
+          ];
+        },
+        filteredItems() {
+          const query = this.normalizedQuery;
+          return this.data.items.filter((item) => {
+            const matchesCategory = this.activeCategory === 'all' || item.categoryKey === this.activeCategory;
+            const matchesQuery = !query || `${item.itemName} ${item.category} ${item.categoryKey} ${item.price ?? ''} ${item.discountPrice ?? ''}`.toLowerCase().includes(query);
+            return matchesCategory && matchesQuery;
+          });
+        },
+        catalogSections() {
+          const grouped = new Map();
+          this.filteredItems.forEach((item) => {
+            const key = item.category || 'Other';
+            if (!grouped.has(key)) grouped.set(key, []);
+            grouped.get(key).push(item);
+          });
 
-      const item = catalogState.selectedItem;
-      catalogSelected.innerHTML = `
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div class="min-w-0 flex-1">
-            <p class="truncate text-sm font-semibold text-emerald-950">
-              Selected: ${escapeHtml(item.itemName)}
-              <span class="mx-2 text-emerald-300">•</span>
-              <span class="text-emerald-700">${escapeHtml(item.category)}</span>
-            </p>
-          </div>
-          <a href="tel:${storePhone}" class="inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-emerald-700">
-            <i data-lucide="phone-call" class="h-4 w-4"></i>
-            Call Now
-          </a>
-        </div>
-      `;
-      catalogSelected.classList.remove('hidden');
-      lucide.createIcons();
-    };
-
-    const renderSuggestions = () => {
-      if (!catalogSuggestions || !catalogSearch) return;
-
-      const query = catalogState.query.trim();
-      const suggestions = getSuggestionItems();
-      catalogState.suggestions = suggestions;
-
-      const open = catalogState.suggestionsOpen && (document.activeElement === catalogSearch || query.length > 0);
-      catalogSearch.setAttribute('aria-expanded', open ? 'true' : 'false');
-
-      if (!open) {
-        catalogSuggestions.classList.add('hidden');
-        catalogSuggestions.innerHTML = '';
-        return;
-      }
-
-      const heading = query.length ? 'Matches' : 'Popular picks';
-
-      catalogSuggestions.innerHTML = `
-        <div class="flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-amber-50 to-white px-4 py-3">
-          <span class="text-xs font-bold uppercase tracking-[0.24em] text-amber-700">${heading}</span>
-          <span class="text-[11px] font-semibold text-slate-400">${suggestions.length} item${suggestions.length === 1 ? '' : 's'}</span>
-        </div>
-        <div class="max-h-80 overflow-auto py-1">
-          ${
-            suggestions.length
-              ? suggestions.map((item, index) => `
-                  <button
-                    type="button"
-                    data-suggestion-index="${index}"
-                    class="flex w-full items-center gap-3 px-4 py-3 text-left transition ${
-                      index === catalogState.suggestionIndex ? 'bg-amber-50' : 'hover:bg-slate-50'
-                    }"
-                  >
-                    <img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.itemName)}" class="h-11 w-11 rounded-2xl object-cover ring-1 ring-slate-200" />
-                    <div class="min-w-0 flex-1">
-                      <p class="truncate text-sm font-semibold text-slate-950">${escapeHtml(item.itemName)}</p>
-                      <p class="truncate text-xs font-medium text-slate-500">${escapeHtml(item.category)} • ${escapeHtml(priceLabel(item.discountPrice ?? item.price))}</p>
-                    </div>
-                    <i data-lucide="move-right" class="h-4 w-4 shrink-0 text-amber-500"></i>
-                  </button>
-                `).join('')
-              : `
-                <div class="px-4 py-6 text-center text-sm text-slate-500">
-                  No products found. Try a different brand, category, or model name.
-                </div>
-              `
-          }
-        </div>
-      `;
-      catalogSuggestions.classList.remove('hidden');
-      lucide.createIcons();
-    };
-
-    const selectSuggestion = (index) => {
-      const item = catalogState.suggestions[index];
-      if (!item) return;
-      catalogState.selectedItem = item;
-      catalogState.query = item.itemName;
-      catalogState.suggestionsOpen = false;
-      catalogState.suggestionIndex = -1;
-      if (catalogSearch) catalogSearch.value = item.itemName;
-      renderSelected();
-      renderSuggestions();
-    };
-
-    const renderTabs = () => {
-      if (!catalogTabs) return;
-      const tabs = [
-        { key: 'all', label: 'All' },
-        ...catalogState.categories,
-      ];
-      catalogTabs.innerHTML = tabs.map((tab) => {
-        const active = catalogState.activeCategory === tab.key;
-        const count = tab.key === 'all'
-          ? catalogState.items.length
-          : (tab.count ?? 0);
-        return `
-          <button
-            type="button"
-            data-category="${escapeHtml(tab.key)}"
-            class="inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
-              active
-                ? 'border-amber-400 bg-amber-100 text-amber-900 shadow-sm'
-                : 'border-slate-200 bg-white text-slate-600 hover:border-amber-300 hover:text-slate-950'
-            }"
-            aria-pressed="${active ? 'true' : 'false'}"
-          >
-            <span>${escapeHtml(tab.label)}</span>
-            <span class="rounded-full ${active ? 'bg-amber-200 text-amber-900' : 'bg-slate-100 text-slate-500'} px-2 py-0.5 text-[11px] font-bold">${count}</span>
-          </button>
-        `;
-      }).join('');
-    };
-
-    const renderCatalog = () => {
-      if (!catalogResults || !catalogSummary) return;
-      const filtered = catalogState.items.filter((item) => {
-        const matchesCategory = catalogState.activeCategory === 'all' || item.categoryKey === catalogState.activeCategory;
-        return matchesCategory;
-      });
-
-      const grouped = groupByCategory(filtered);
-      const visibleCategories = catalogState.categories.filter((category) => grouped[category.label]?.length);
-      const isBrowsingAll = catalogState.activeCategory === 'all';
-      const totalShown = visibleCategories.reduce((sum, category) => {
-        const count = grouped[category.label].length;
-        return sum + (isBrowsingAll ? Math.min(count, 4) : count);
-      }, 0);
-
-      catalogSummary.textContent = `${filtered.length} matching items across ${visibleCategories.length} categories`;
-
-      if (!filtered.length) {
-        catalogResults.innerHTML = `
-          <div class="glass rounded-[2rem] border border-slate-200 p-8 text-center shadow-glow">
-            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
-              <i data-lucide="search-x" class="h-6 w-6"></i>
-            </div>
-            <h3 class="mt-4 text-xl font-bold text-slate-950">No matching items</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-500">Try a different brand, model number, or switch to another category.</p>
-          </div>
-        `;
-        lucide.createIcons();
-        return;
-      }
-
-      catalogResults.innerHTML = visibleCategories.map((category) => {
-        const items = grouped[category.label];
-        const shown = isBrowsingAll ? items.slice(0, 4) : items;
-        const truncated = isBrowsingAll && items.length > shown.length;
-        return `
-          <section class="mb-8">
-            <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p class="text-xs font-bold uppercase tracking-[0.26em] text-amber-700">${escapeHtml(category.label)}</p>
-                <h3 class="mt-1 text-xl font-bold text-slate-950">${items.length} item${items.length === 1 ? '' : 's'}</h3>
-              </div>
-              ${
-                truncated
-                  ? `<button type="button" data-view-category="${escapeHtml(category.key)}" class="inline-flex items-center gap-2 self-start rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800 transition hover:bg-amber-100">
-                      View all
-                      <i data-lucide="arrow-right" class="h-4 w-4"></i>
-                    </button>`
-                  : ''
+          return this.data.categories
+            .filter((category) => grouped.has(category.label))
+            .map((category) => ({
+              category,
+              items: grouped.get(category.label),
+            }));
+        },
+        normalizedCatalogForExport() {
+          return normalizeCatalogPayload(this.data);
+        },
+      },
+      methods: {
+        async bootstrap() {
+          try {
+            const stored = window.localStorage.getItem(CATALOG_OVERRIDE_KEY);
+            if (stored) {
+              const record = JSON.parse(stored);
+              const normalized = normalizeCatalogPayload(record?.payload);
+              if (normalized.items.length) {
+                this.data = normalized;
+                this.catalogSourceLabel = record?.sourceFileName ? `Uploaded: ${record.sourceFileName}` : 'Uploaded catalog override';
+                this.catalogImportStatus = `Loaded uploaded catalog (${normalized.items.length} items).`;
+                this.loading = false;
+                return;
               }
-            </div>
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              ${shown.map((item) => {
-                const priceText = priceLabel(item.price);
-                const discountText = priceLabel(item.discountPrice);
-                const stockText = item.stock > 0 ? `In stock: ${item.stock}` : 'Out of stock';
-                return `
-                  <article class="group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-glow transition hover:-translate-y-1">
-                    <div class="relative">
-                      <img src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(item.itemName)}" class="h-48 w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
-                      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent"></div>
-                      <div class="absolute bottom-0 left-0 right-0 p-4">
-                        <p class="text-xs font-bold uppercase tracking-[0.24em] text-amber-200">${escapeHtml(item.category)}</p>
-                        <h4 class="mt-1 text-lg font-bold text-white">${escapeHtml(item.itemName)}</h4>
-                      </div>
-                    </div>
-                    <div class="p-4">
-                      <div class="flex items-center justify-between gap-3">
-                        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">${escapeHtml(stockText)}</span>
-                        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Catalogue item</span>
-                      </div>
-                      <div class="mt-4 grid gap-2 sm:grid-cols-2">
-                        <div class="rounded-2xl bg-slate-50 p-3">
-                          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Price</p>
-                          <p class="mt-1 text-sm font-semibold text-slate-900">${escapeHtml(priceText)}</p>
-                        </div>
-                        <div class="rounded-2xl bg-slate-50 p-3">
-                          <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">Discount</p>
-                          <p class="mt-1 text-sm font-semibold text-slate-900">${escapeHtml(discountText)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </article>
-                `;
-              }).join('')}
-            </div>
-          </section>
-        `;
-      }).join('');
-
-      if (isBrowsingAll) {
-        catalogResults.innerHTML += `
-          <div class="mb-8 rounded-[1.75rem] border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900 shadow-sm">
-            Showing ${totalShown} featured items out of ${catalogState.items.length} total. Use search or a category tab to browse the full inventory.
-          </div>
-        `;
-      }
-
-      lucide.createIcons();
-    };
-
-    const syncCatalog = () => {
-      renderTabs();
-      renderCatalog();
-    };
-
-    if (catalogTabs) {
-      catalogTabs.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-category]');
-        if (!button) return;
-        catalogState.activeCategory = button.dataset.category || 'all';
-        syncCatalog();
-      });
-    }
-
-    if (catalogResults) {
-      catalogResults.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-view-category]');
-        if (!button) return;
-        catalogState.activeCategory = button.dataset.viewCategory || 'all';
-        if (catalogSearch) catalogSearch.focus();
-        syncCatalog();
-      });
-    }
-
-    if (catalogSearch) {
-      catalogSearch.addEventListener('focus', () => {
-        catalogState.suggestionsOpen = true;
-        catalogState.suggestionIndex = -1;
-        renderSuggestions();
-      });
-
-      catalogSearch.addEventListener('input', (event) => {
-        catalogState.query = event.target.value || '';
-        catalogState.selectedItem = null;
-        catalogState.suggestionIndex = -1;
-        catalogState.suggestionsOpen = true;
-        renderSelected();
-        renderSuggestions();
-      });
-
-      catalogSearch.addEventListener('keydown', (event) => {
-        if (!catalogState.suggestions.length || catalogSuggestions.classList.contains('hidden')) return;
-        if (event.key === 'ArrowDown') {
-          event.preventDefault();
-          catalogState.suggestionIndex = (catalogState.suggestionIndex + 1) % catalogState.suggestions.length;
-          renderSuggestions();
-        } else if (event.key === 'ArrowUp') {
-          event.preventDefault();
-          catalogState.suggestionIndex = catalogState.suggestionIndex <= 0
-            ? catalogState.suggestions.length - 1
-            : catalogState.suggestionIndex - 1;
-          renderSuggestions();
-        } else if (event.key === 'Enter') {
-          if (catalogState.suggestionIndex >= 0) {
-            event.preventDefault();
-            selectSuggestion(catalogState.suggestionIndex);
-          } else if (catalogState.suggestions.length === 1) {
-            event.preventDefault();
-            selectSuggestion(0);
+            }
+          } catch (error) {
+            console.warn('Stored catalog override could not be loaded', error);
           }
-        } else if (event.key === 'Escape') {
-          catalogState.suggestionsOpen = false;
-          catalogState.suggestionIndex = -1;
-          renderSuggestions();
-        }
-      });
 
-      catalogSearch.addEventListener('blur', () => {
-        window.setTimeout(() => {
-          catalogState.suggestionsOpen = false;
-          catalogState.suggestionIndex = -1;
-          renderSuggestions();
-        }, 140);
-      });
-    }
+          if (window.location.protocol.startsWith('http')) {
+            try {
+              const response = await fetch('/api/catalog', { cache: 'no-store' });
+              if (!response.ok) throw new Error(`Failed to load catalog data (${response.status})`);
+              const normalized = normalizeCatalogPayload(await response.json());
+              if (normalized.items.length) {
+                this.data = normalized;
+                this.catalogSourceLabel = 'Server catalog-data.json';
+                this.catalogImportStatus = `Loaded live catalog (${normalized.items.length} items).`;
+                this.loading = false;
+                return;
+              }
+            } catch (error) {
+              console.warn('Server catalog could not be loaded, falling back to static files', error);
+            }
+          }
 
-    if (catalogSuggestions) {
-      catalogSuggestions.addEventListener('mousedown', (event) => {
-        event.preventDefault();
-      });
+          try {
+            const response = await fetch('./catalog-data.json', { cache: 'no-store' });
+            if (!response.ok) throw new Error(`Failed to load catalog data (${response.status})`);
+            const normalized = normalizeCatalogPayload(await response.json());
+            if (normalized.items.length) {
+              this.data = normalized;
+              this.catalogSourceLabel = 'Bundled catalog-data.json';
+              this.catalogImportStatus = `Loaded bundled catalog (${normalized.items.length} items).`;
+              this.loading = false;
+              return;
+            }
+          } catch (error) {
+            console.warn('catalog-data.json could not be loaded, falling back to catalog-data.js', error);
+          }
 
-      catalogSuggestions.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-suggestion-index]');
-        if (!button) return;
-        selectSuggestion(Number(button.dataset.suggestionIndex));
-      });
-    }
-
-    if (catalogClear) {
-      catalogClear.addEventListener('click', () => {
-        catalogState.query = '';
-        catalogState.activeCategory = 'all';
-        catalogState.selectedItem = null;
-        catalogState.suggestionsOpen = false;
-        catalogState.suggestionIndex = -1;
-        if (catalogSearch) catalogSearch.value = '';
-        renderSelected();
-        renderSuggestions();
-        syncCatalog();
-      });
-    }
-
-    fetch('./catalog-data.json')
-      .then((response) => {
-        if (!response.ok) throw new Error(`Failed to load catalog data (${response.status})`);
-        return response.json();
-      })
-      .then((payload) => {
-        catalogState.items = Array.isArray(payload.items) ? payload.items : [];
-        catalogState.categories = Array.isArray(payload.categories) ? payload.categories : [];
-        syncCatalog();
-        renderSuggestions();
-      })
-      .catch(() => {
-        if (catalogSummary) catalogSummary.textContent = 'Catalogue unavailable';
-        if (catalogResults) {
-          catalogResults.innerHTML = `
-            <div class="glass rounded-[2rem] border border-slate-200 p-8 text-center shadow-glow">
-              <h3 class="text-xl font-bold text-slate-950">Inventory could not be loaded</h3>
-              <p class="mt-2 text-sm leading-6 text-slate-500">Check that <code>catalog-data.json</code> is deployed alongside the site.</p>
-            </div>
+          const bundled = normalizeCatalogPayload(window.__CATALOG_DATA__);
+          if (bundled.items.length) {
+            this.data = bundled;
+            this.catalogSourceLabel = 'Bundled catalog-data.js';
+            this.catalogImportStatus = `Loaded bundled catalog (${bundled.items.length} items).`;
+          } else {
+            this.error = 'Inventory could not be loaded.';
+          }
+          this.loading = false;
+        },
+        formatPrice(value) {
+          if (value === null || value === undefined || value === '') return 'Price on request';
+          if (typeof value === 'number') return `₹${value}`;
+          return String(value);
+        },
+        escapeSvgText(value) {
+          return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        },
+        fallbackImageForItem(item) {
+          const label = this.escapeSvgText(item?.category || 'Product');
+          const title = this.escapeSvgText(item?.itemName || 'Product');
+          const subtitleMap = {
+            adaptor: 'Power essentials',
+            'air-fryer': 'Kitchen upgrade',
+            battery: 'Backup & power',
+            blender: 'Food prep',
+            chimney: 'Fresh kitchen',
+            cooktop: 'Cooking surface',
+            cooler: 'Summer comfort',
+            fan: 'Air circulation',
+            'home-theater': 'Big sound',
+            led: 'Visual entertainment',
+            ac: 'Climate control',
+            mobile: 'Mobile tech',
+            laptop: 'Work & study',
+            ref: 'Cold storage',
+          };
+          const subtitle = this.escapeSvgText(subtitleMap[item?.categoryKey] || 'Store placeholder');
+          const accentMap = {
+            adaptor: ['#fbbf24', '#fb923c'],
+            'air-fryer': ['#f97316', '#fdba74'],
+            battery: ['#60a5fa', '#3b82f6'],
+            blender: ['#f472b6', '#ec4899'],
+            chimney: ['#a78bfa', '#7c3aed'],
+            cooktop: ['#34d399', '#10b981'],
+            cooler: ['#38bdf8', '#0ea5e9'],
+            fan: ['#22c55e', '#16a34a'],
+            'home-theater': ['#f59e0b', '#d97706'],
+            led: ['#facc15', '#eab308'],
+            ac: ['#06b6d4', '#0891b2'],
+            mobile: ['#fb7185', '#f43f5e'],
+            laptop: ['#8b5cf6', '#7c3aed'],
+            ref: ['#14b8a6', '#0f766e'],
+          };
+          const [a, b] = accentMap[item?.categoryKey] || ['#64748b', '#0f172a'];
+          const motifs = {
+            adaptor: `
+              <rect x="298" y="165" width="204" height="270" rx="34" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <rect x="346" y="214" width="108" height="154" rx="18" fill="rgba(15,23,42,0.18)" />
+              <circle cx="400" cy="394" r="16" fill="white" />
+              <rect x="370" y="126" width="60" height="26" rx="13" fill="rgba(255,255,255,0.75)" />
+            `,
+            'air-fryer': `
+              <ellipse cx="400" cy="334" rx="150" ry="126" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.7)" stroke-width="8" />
+              <ellipse cx="400" cy="334" rx="98" ry="72" fill="rgba(15,23,42,0.16)" />
+              <path d="M335 266h130" stroke="rgba(255,255,255,0.86)" stroke-width="12" stroke-linecap="round" />
+              <rect x="374" y="192" width="52" height="30" rx="15" fill="rgba(255,255,255,0.75)" />
+            `,
+            battery: `
+              <rect x="260" y="192" width="248" height="204" rx="28" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <rect x="508" y="258" width="28" height="72" rx="8" fill="rgba(255,255,255,0.86)" />
+              <path d="M368 236l-48 78h56l-16 70 82-104h-58l12-44z" fill="rgba(255,255,255,0.92)" />
+            `,
+            blender: `
+              <path d="M325 168h150l-20 78h-110z" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.7)" stroke-width="8" />
+              <rect x="360" y="246" width="80" height="150" rx="24" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <rect x="338" y="388" width="124" height="36" rx="18" fill="rgba(255,255,255,0.78)" />
+              <rect x="376" y="136" width="48" height="18" rx="9" fill="rgba(255,255,255,0.7)" />
+            `,
+            chimney: `
+              <path d="M270 220h260l-36 148H306z" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <rect x="352" y="118" width="96" height="114" rx="18" fill="rgba(255,255,255,0.78)" />
+              <path d="M306 336h188" stroke="rgba(255,255,255,0.92)" stroke-width="10" stroke-linecap="round" />
+              <path d="M320 284c0 26 18 48 36 48s36-22 36-48" stroke="rgba(15,23,42,0.2)" stroke-width="10" fill="none" />
+            `,
+            cooktop: `
+              <rect x="250" y="208" width="300" height="184" rx="28" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <circle cx="346" cy="294" r="42" fill="rgba(15,23,42,0.18)" stroke="rgba(255,255,255,0.9)" stroke-width="8" />
+              <circle cx="454" cy="294" r="42" fill="rgba(15,23,42,0.18)" stroke="rgba(255,255,255,0.9)" stroke-width="8" />
+              <rect x="298" y="168" width="204" height="20" rx="10" fill="rgba(255,255,255,0.7)" />
+            `,
+            cooler: `
+              <rect x="266" y="150" width="268" height="284" rx="34" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <circle cx="400" cy="296" r="70" fill="rgba(255,255,255,0.75)" />
+              <path d="M400 226c-28 0-52 24-52 54 0 18 8 34 20 46" stroke="rgba(15,23,42,0.22)" stroke-width="12" fill="none" stroke-linecap="round" />
+              <path d="M400 226c28 0 52 24 52 54 0 18-8 34-20 46" stroke="rgba(15,23,42,0.22)" stroke-width="12" fill="none" stroke-linecap="round" />
+              <rect x="314" y="388" width="172" height="28" rx="14" fill="rgba(255,255,255,0.75)" />
+            `,
+            fan: `
+              <circle cx="400" cy="302" r="48" fill="rgba(255,255,255,0.84)" />
+              <path d="M400 200c34 0 54 32 44 62-11 32-54 52-86 40" fill="rgba(255,255,255,0.5)" />
+              <path d="M306 316c0-34 32-54 62-44 32 11 52 54 40 86" fill="rgba(255,255,255,0.5)" />
+              <path d="M420 396c-34 0-54-32-44-62 11-32 54-52 86-40" fill="rgba(255,255,255,0.5)" />
+              <rect x="386" y="350" width="28" height="108" rx="14" fill="rgba(255,255,255,0.78)" />
+              <rect x="322" y="452" width="156" height="20" rx="10" fill="rgba(255,255,255,0.75)" />
+            `,
+            'home-theater': `
+              <rect x="238" y="196" width="324" height="172" rx="26" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <rect x="268" y="226" width="264" height="112" rx="18" fill="rgba(15,23,42,0.22)" />
+              <circle cx="400" cy="284" r="22" fill="rgba(255,255,255,0.92)" />
+              <path d="M332 414h136" stroke="rgba(255,255,255,0.84)" stroke-width="12" stroke-linecap="round" />
+              <path d="M372 368l-42 62h124l-42-62" fill="rgba(255,255,255,0.7)" />
+            `,
+            led: `
+              <rect x="230" y="184" width="340" height="216" rx="24" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <rect x="258" y="210" width="284" height="148" rx="14" fill="rgba(15,23,42,0.18)" />
+              <path d="M358 404h84" stroke="rgba(255,255,255,0.88)" stroke-width="12" stroke-linecap="round" />
+              <path d="M382 366l-20 38h76l-20-38" fill="rgba(255,255,255,0.78)" />
+            `,
+            ac: `
+              <rect x="236" y="182" width="328" height="180" rx="32" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <path d="M290 252c28 0 28-32 56-32s28 32 56 32 28-32 56-32 28 32 56 32" stroke="rgba(255,255,255,0.9)" stroke-width="10" fill="none" stroke-linecap="round" />
+              <path d="M290 286c28 0 28-32 56-32s28 32 56 32 28-32 56-32 28 32 56 32" stroke="rgba(255,255,255,0.76)" stroke-width="10" fill="none" stroke-linecap="round" />
+              <rect x="326" y="390" width="148" height="24" rx="12" fill="rgba(255,255,255,0.78)" />
+            `,
+            mobile: `
+              <rect x="304" y="144" width="192" height="312" rx="34" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.78)" stroke-width="8" />
+              <rect x="330" y="182" width="140" height="188" rx="18" fill="rgba(15,23,42,0.18)" />
+              <circle cx="400" cy="400" r="18" fill="rgba(255,255,255,0.86)" />
+              <rect x="364" y="160" width="72" height="12" rx="6" fill="rgba(255,255,255,0.82)" />
+            `,
+            laptop: `
+              <rect x="260" y="170" width="280" height="180" rx="18" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <rect x="286" y="196" width="228" height="128" rx="12" fill="rgba(15,23,42,0.18)" />
+              <path d="M240 368h320l-34 44H274z" fill="rgba(255,255,255,0.84)" />
+              <path d="M296 384h208" stroke="rgba(15,23,42,0.2)" stroke-width="10" stroke-linecap="round" />
+            `,
+            ref: `
+              <rect x="294" y="142" width="212" height="320" rx="30" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.72)" stroke-width="8" />
+              <path d="M354 188h88" stroke="rgba(255,255,255,0.9)" stroke-width="12" stroke-linecap="round" />
+              <path d="M356 258h80" stroke="rgba(255,255,255,0.72)" stroke-width="10" stroke-linecap="round" />
+              <rect x="330" y="196" width="12" height="230" rx="6" fill="rgba(255,255,255,0.9)" />
+            `,
+          };
+          const motif = motifs[item?.categoryKey] || `
+            <circle cx="400" cy="294" r="104" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.68)" stroke-width="8" />
+            <path d="M340 294h120" stroke="rgba(255,255,255,0.82)" stroke-width="12" stroke-linecap="round" />
           `;
-        }
-      });
+          const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="${title}">
+              <defs>
+                <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="${a}" />
+                  <stop offset="100%" stop-color="${b}" />
+                </linearGradient>
+              </defs>
+              <rect width="800" height="600" rx="48" fill="url(#g)" />
+              <circle cx="670" cy="110" r="120" fill="rgba(255,255,255,0.12)" />
+              <circle cx="110" cy="510" r="140" fill="rgba(255,255,255,0.08)" />
+              <rect x="70" y="70" width="660" height="460" rx="36" fill="rgba(15,23,42,0.22)" stroke="rgba(255,255,255,0.24)" />
+              <text x="100" y="165" fill="white" font-family="Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="6">${label.toUpperCase()}</text>
+              <text x="100" y="245" fill="white" font-family="Arial, sans-serif" font-size="48" font-weight="800">${title.slice(0, 32)}</text>
+              <text x="100" y="305" fill="rgba(255,255,255,0.92)" font-family="Arial, sans-serif" font-size="22">${subtitle}</text>
+              <g transform="translate(0, 20)">${motif}</g>
+              <rect x="100" y="438" width="248" height="54" rx="16" fill="rgba(255,255,255,0.16)" />
+              <text x="138" y="472" fill="white" font-family="Arial, sans-serif" font-size="22" font-weight="700">Category fallback</text>
+            </svg>`;
+          return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        },
+        productImage(item) {
+          const itemImage = item?.imageUrl && String(item.imageUrl).trim() ? String(item.imageUrl).trim() : '';
+          if (itemImage) return itemImage;
+          const categoryImage = this.data.categories.find((category) => category.key === item?.categoryKey)?.imageUrl || '';
+          if (categoryImage && String(categoryImage).trim()) return String(categoryImage).trim();
+          return this.fallbackImageForItem(item);
+        },
+        handleProductImageError(event) {
+          const img = event?.target;
+          if (!img || img.dataset.fallbackApplied === '1') return;
+          const itemName = img.getAttribute('alt') || 'Product';
+          const item = this.data.items.find((entry) => entry.itemName === itemName) || null;
+          img.dataset.fallbackApplied = '1';
+          img.src = this.fallbackImageForItem(item || { itemName, category: 'Product', categoryKey: 'product' });
+        },
+        selectCategory(key) {
+          this.activeCategory = key;
+        },
+        clearSearch() {
+          this.searchQuery = '';
+          this.showSuggestions = false;
+        },
+        openItem(item) {
+          this.selectedItem = item;
+          this.showSuggestions = false;
+        },
+        openSuggestion(item) {
+          this.searchQuery = item.itemName;
+          this.openItem(item);
+        },
+        openSearchResultsPage() {
+          this.currentView = 'search-results';
+          this.showSuggestions = false;
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        openProductsPage() {
+          this.currentView = 'products';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        async persistCatalogToServer(payload, meta = {}) {
+          if (!window.location.protocol.startsWith('http')) {
+            throw new Error('Server persistence is only available when the site is served over http or https.');
+          }
 
-    lucide.createIcons();
+          const response = await fetch('/api/catalog', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(this.catalogAdminToken.trim() ? { 'X-Catalog-Admin-Token': this.catalogAdminToken.trim() } : {}),
+            },
+            body: JSON.stringify({ payload, meta }),
+          });
+
+          const body = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(body?.error || `Failed to save catalog (${response.status})`);
+          }
+
+          return body;
+        },
+        triggerCatalogFilePicker() {
+          this.catalogImportError = '';
+          this.$refs.catalogFileInput?.click();
+        },
+        handleCatalogFileSelect(event) {
+          const file = event?.target?.files?.[0] || null;
+          this.catalogSelectedFileName = file ? file.name : '';
+          this.catalogImportStatus = file ? `Selected ${file.name}. Ready to import.` : '';
+          this.catalogImportError = '';
+        },
+        async importSelectedCatalogFile() {
+          const input = this.$refs.catalogFileInput;
+          const file = input?.files?.[0];
+          if (!file) {
+            this.catalogImportError = 'Choose a CSV or Excel file first.';
+            return;
+          }
+
+          try {
+            const fileName = file.name || 'catalog';
+            const ext = fileName.split('.').pop().toLowerCase();
+            let workbook;
+            if (ext === 'csv') {
+              const text = await file.text();
+              workbook = window.XLSX.read(text, { type: 'string' });
+            } else {
+              const buffer = await file.arrayBuffer();
+              workbook = window.XLSX.read(buffer, { type: 'array' });
+            }
+
+            const sheetName = workbook.SheetNames[0];
+            if (!sheetName) throw new Error('The uploaded file has no worksheet.');
+            const sheet = workbook.Sheets[sheetName];
+            const rows = window.XLSX.utils.sheet_to_json(sheet, { defval: '' });
+            const normalized = normalizeCatalogPayload({ items: rows });
+            if (!normalized.items.length) throw new Error('No valid rows found. Make sure category and itemName are filled.');
+
+            const record = {
+              sourceFileName: fileName,
+              importedAt: new Date().toISOString(),
+              payload: normalized,
+            };
+
+            this.data = normalized;
+            this.catalogSourceLabel = `Prepared: ${fileName}`;
+
+            try {
+              const saved = await this.persistCatalogToServer(normalized, record);
+              const serverCatalog = normalizeCatalogPayload(saved?.catalog || normalized);
+              this.data = serverCatalog;
+              this.catalogSourceLabel = 'Server catalog-data.json';
+              this.catalogImportStatus = `Saved ${serverCatalog.items.length} items to the live catalog.`;
+              this.catalogImportError = '';
+              window.localStorage.removeItem(CATALOG_OVERRIDE_KEY);
+            } catch (serverError) {
+              window.localStorage.setItem(CATALOG_OVERRIDE_KEY, JSON.stringify(record));
+              this.catalogSourceLabel = `Uploaded locally: ${fileName}`;
+              this.catalogImportStatus = `Saved ${normalized.items.length} items in this browser only.`;
+              this.catalogImportError = serverError?.message || 'Could not save to the server.';
+            }
+
+            this.currentView = 'products';
+            this.showCatalogManager = false;
+            this.showSuggestions = false;
+            if (input) input.value = '';
+            this.catalogSelectedFileName = '';
+            if (this.catalogAdminToken.trim()) {
+              window.localStorage.setItem(CATALOG_ADMIN_TOKEN_KEY, this.catalogAdminToken.trim());
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            nextTick(() => window.lucide?.createIcons());
+          } catch (error) {
+            this.catalogImportError = error?.message || 'Could not import that file.';
+          }
+        },
+        async clearCatalogOverride() {
+          try {
+            window.localStorage.removeItem(CATALOG_OVERRIDE_KEY);
+          } catch (error) {
+            console.warn('Could not clear local catalog override', error);
+          }
+          await this.bootstrap();
+          this.catalogImportStatus = 'Restored the active catalog source.';
+          this.catalogImportError = '';
+          this.catalogSelectedFileName = '';
+          this.currentView = 'products';
+        },
+        downloadNormalizedCatalogJson() {
+          const payload = this.normalizedCatalogForExport;
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'catalog-data.json';
+          link.click();
+          URL.revokeObjectURL(url);
+        },
+        closeItem() {
+          this.selectedItem = null;
+        },
+        openFirstSuggestion() {
+          if (this.suggestionItems.length) {
+            this.openSuggestion(this.suggestionItems[0]);
+          } else {
+            this.showSuggestions = false;
+          }
+        },
+        scheduleHideSuggestions() {
+          window.setTimeout(() => {
+            this.showSuggestions = false;
+          }, 120);
+        },
+        visibleCatalogItems(section) {
+          if (this.expandedCatalogSections[section.category.key]) return section.items;
+          return section.items.slice(0, 3);
+        },
+        toggleCatalogSection(sectionKey) {
+          this.expandedCatalogSections = {
+            ...this.expandedCatalogSections,
+            [sectionKey]: !this.expandedCatalogSections[sectionKey],
+          };
+        },
+        scrollClipCarousel(direction) {
+          const carousel = this.$refs.clipCarousel;
+          if (!carousel) return;
+          const step = Math.max(280, Math.floor(carousel.clientWidth * 0.78));
+          carousel.scrollBy({ left: step * direction, behavior: 'smooth' });
+        },
+        startHeroTimer() {
+          this.heroTimer = window.setInterval(() => {
+            this.heroIndex = (this.heroIndex + 1) % this.heroSlides.length;
+          }, 5200);
+        },
+      },
+      mounted() {
+        this.bootstrap();
+        this.startHeroTimer();
+        this.$nextTick(() => window.lucide?.createIcons());
+      },
+      beforeUnmount() {
+        if (this.heroTimer) window.clearInterval(this.heroTimer);
+      },
+      updated() {
+        nextTick(() => window.lucide?.createIcons());
+      },
+    }).mount('#app');
   </script>
+  <style>
+    .fade-enter-active,
+    .fade-leave-active {
+      transition: opacity 180ms ease;
+    }
+    .fade-enter-from,
+    .fade-leave-to {
+      opacity: 0;
+    }
+  </style>
 </body>
 </html>

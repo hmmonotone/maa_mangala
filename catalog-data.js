@@ -1,4 +1,4 @@
-{
+window.__CATALOG_DATA__ = {
   "categories": [
     {
       "key": "adaptor",
@@ -2630,7 +2630,7 @@
       "itemName": "VIVO MOBILE Y31 5G DIAMOND GREEN 6/128",
       "price": null,
       "discountPrice": null,
-      "imageUrl": "https://m.media-amazon.com/images/I/71fCp9tAtLL.jpg",
+      "imageUrl": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1200&q=80",
       "stock": 1
     },
     {
@@ -3543,4 +3543,4 @@
       "stock": 3
     }
   ]
-}
+};
